@@ -1,0 +1,3686 @@
+{
+  "generatedAt": "2026-01-01T00:00:00.000Z",
+  "jevPilot": {
+    "queries": 20,
+    "chosen": "per_pair",
+    "rows": [
+      {
+        "formulation": "per_pair",
+        "description": "one call per candidate, query + card in state",
+        "ndcg10": 0.6,
+        "p50Ms": 500,
+        "costPer1kUsd": 0.5,
+        "requestsPerSearch": 100
+      },
+      {
+        "formulation": "fan_out",
+        "description": "one call per query, 100 questions each carrying a card",
+        "ndcg10": 0.5,
+        "p50Ms": 300,
+        "costPer1kUsd": 0.5,
+        "requestsPerSearch": 1
+      }
+    ]
+  },
+  "snapshot": "data/companies-2026-09-22.json",
+  "synthetic": true,
+  "queryCounts": {
+    "competitor": 50,
+    "product": 50,
+    "job": 50,
+    "open_source": 50
+  },
+  "gradedPairs": 8000,
+  "judgeAgreement": {
+    "n": 200,
+    "exact": 0.7,
+    "within1": 0.9,
+    "kappa": 0.6
+  },
+  "arms": [
+    {
+      "arm": "none",
+      "overall": {
+        "ndcg10": {
+          "mean": 0.4,
+          "lo": 0.35,
+          "hi": 0.45
+        },
+        "recall10": {
+          "mean": 0.3,
+          "lo": 0.25,
+          "hi": 0.35
+        },
+        "mrr": {
+          "mean": 0.5,
+          "lo": 0.45,
+          "hi": 0.55
+        },
+        "n": 200
+      },
+      "byIntent": {
+        "competitor": {
+          "ndcg10": {
+            "mean": 0.5,
+            "lo": 0.45,
+            "hi": 0.55
+          },
+          "recall10": {
+            "mean": 0.4,
+            "lo": 0.35,
+            "hi": 0.45
+          },
+          "mrr": {
+            "mean": 0.6,
+            "lo": 0.55,
+            "hi": 0.65
+          },
+          "n": 50
+        },
+        "product": {
+          "ndcg10": {
+            "mean": 0.4,
+            "lo": 0.35,
+            "hi": 0.45
+          },
+          "recall10": {
+            "mean": 0.3,
+            "lo": 0.25,
+            "hi": 0.35
+          },
+          "mrr": {
+            "mean": 0.5,
+            "lo": 0.45,
+            "hi": 0.55
+          },
+          "n": 50
+        },
+        "job": {
+          "ndcg10": {
+            "mean": 0.3,
+            "lo": 0.25,
+            "hi": 0.35
+          },
+          "recall10": {
+            "mean": 0.2,
+            "lo": 0.15,
+            "hi": 0.25
+          },
+          "mrr": {
+            "mean": 0.4,
+            "lo": 0.35,
+            "hi": 0.45
+          },
+          "n": 50
+        },
+        "open_source": {
+          "ndcg10": {
+            "mean": 0.2,
+            "lo": 0.15,
+            "hi": 0.25
+          },
+          "recall10": {
+            "mean": 0.1,
+            "lo": 0.05,
+            "hi": 0.15
+          },
+          "mrr": {
+            "mean": 0.3,
+            "lo": 0.25,
+            "hi": 0.35
+          },
+          "n": 50
+        }
+      },
+      "speed": {
+        "p50Ms": 0,
+        "p99Ms": 0,
+        "costPer1kUsd": null,
+        "latencyBasis": "wall"
+      },
+      "knownItemRanks": [
+        1,
+        2,
+        5,
+        10,
+        null,
+        3,
+        1,
+        20,
+        50,
+        null
+      ]
+    },
+    {
+      "arm": "bge",
+      "overall": {
+        "ndcg10": {
+          "mean": 0.5,
+          "lo": 0.45,
+          "hi": 0.55
+        },
+        "recall10": {
+          "mean": 0.4,
+          "lo": 0.35,
+          "hi": 0.45
+        },
+        "mrr": {
+          "mean": 0.6,
+          "lo": 0.55,
+          "hi": 0.65
+        },
+        "n": 200
+      },
+      "byIntent": {
+        "competitor": {
+          "ndcg10": {
+            "mean": 0.6,
+            "lo": 0.55,
+            "hi": 0.65
+          },
+          "recall10": {
+            "mean": 0.5,
+            "lo": 0.45,
+            "hi": 0.55
+          },
+          "mrr": {
+            "mean": 0.7,
+            "lo": 0.65,
+            "hi": 0.75
+          },
+          "n": 50
+        },
+        "product": {
+          "ndcg10": {
+            "mean": 0.5,
+            "lo": 0.45,
+            "hi": 0.55
+          },
+          "recall10": {
+            "mean": 0.4,
+            "lo": 0.35,
+            "hi": 0.45
+          },
+          "mrr": {
+            "mean": 0.6,
+            "lo": 0.55,
+            "hi": 0.65
+          },
+          "n": 50
+        },
+        "job": {
+          "ndcg10": {
+            "mean": 0.4,
+            "lo": 0.35,
+            "hi": 0.45
+          },
+          "recall10": {
+            "mean": 0.3,
+            "lo": 0.25,
+            "hi": 0.35
+          },
+          "mrr": {
+            "mean": 0.5,
+            "lo": 0.45,
+            "hi": 0.55
+          },
+          "n": 50
+        },
+        "open_source": {
+          "ndcg10": {
+            "mean": 0.3,
+            "lo": 0.25,
+            "hi": 0.35
+          },
+          "recall10": {
+            "mean": 0.2,
+            "lo": 0.15,
+            "hi": 0.25
+          },
+          "mrr": {
+            "mean": 0.4,
+            "lo": 0.35,
+            "hi": 0.45
+          },
+          "n": 50
+        }
+      },
+      "speed": {
+        "p50Ms": 2000,
+        "p99Ms": 4000,
+        "costPer1kUsd": null,
+        "latencyBasis": "wall"
+      },
+      "knownItemRanks": [
+        1,
+        1,
+        4,
+        9,
+        null,
+        2,
+        1,
+        19,
+        49,
+        null
+      ]
+    },
+    {
+      "arm": "haiku",
+      "overall": {
+        "ndcg10": {
+          "mean": 0.7,
+          "lo": 0.65,
+          "hi": 0.75
+        },
+        "recall10": {
+          "mean": 0.6,
+          "lo": 0.55,
+          "hi": 0.65
+        },
+        "mrr": {
+          "mean": 0.8,
+          "lo": 0.75,
+          "hi": 0.85
+        },
+        "n": 200
+      },
+      "byIntent": {
+        "competitor": {
+          "ndcg10": {
+            "mean": 0.8,
+            "lo": 0.75,
+            "hi": 0.85
+          },
+          "recall10": {
+            "mean": 0.7,
+            "lo": 0.65,
+            "hi": 0.75
+          },
+          "mrr": {
+            "mean": 0.9,
+            "lo": 0.85,
+            "hi": 0.95
+          },
+          "n": 50
+        },
+        "product": {
+          "ndcg10": {
+            "mean": 0.7,
+            "lo": 0.65,
+            "hi": 0.75
+          },
+          "recall10": {
+            "mean": 0.6,
+            "lo": 0.55,
+            "hi": 0.65
+          },
+          "mrr": {
+            "mean": 0.8,
+            "lo": 0.75,
+            "hi": 0.85
+          },
+          "n": 50
+        },
+        "job": {
+          "ndcg10": {
+            "mean": 0.6,
+            "lo": 0.55,
+            "hi": 0.65
+          },
+          "recall10": {
+            "mean": 0.5,
+            "lo": 0.45,
+            "hi": 0.55
+          },
+          "mrr": {
+            "mean": 0.7,
+            "lo": 0.65,
+            "hi": 0.75
+          },
+          "n": 50
+        },
+        "open_source": {
+          "ndcg10": {
+            "mean": 0.5,
+            "lo": 0.45,
+            "hi": 0.55
+          },
+          "recall10": {
+            "mean": 0.4,
+            "lo": 0.35,
+            "hi": 0.45
+          },
+          "mrr": {
+            "mean": 0.6,
+            "lo": 0.55,
+            "hi": 0.65
+          },
+          "n": 50
+        }
+      },
+      "speed": {
+        "p50Ms": 8000,
+        "p99Ms": 16000,
+        "costPer1kUsd": 20,
+        "latencyBasis": "api"
+      },
+      "knownItemRanks": [
+        1,
+        1,
+        4,
+        9,
+        null,
+        2,
+        1,
+        19,
+        49,
+        null
+      ]
+    },
+    {
+      "arm": "jev",
+      "overall": {
+        "ndcg10": {
+          "mean": 0.6,
+          "lo": 0.55,
+          "hi": 0.65
+        },
+        "recall10": {
+          "mean": 0.5,
+          "lo": 0.45,
+          "hi": 0.55
+        },
+        "mrr": {
+          "mean": 0.7,
+          "lo": 0.65,
+          "hi": 0.75
+        },
+        "n": 200
+      },
+      "byIntent": {
+        "competitor": {
+          "ndcg10": {
+            "mean": 0.7,
+            "lo": 0.65,
+            "hi": 0.75
+          },
+          "recall10": {
+            "mean": 0.6,
+            "lo": 0.55,
+            "hi": 0.65
+          },
+          "mrr": {
+            "mean": 0.8,
+            "lo": 0.75,
+            "hi": 0.85
+          },
+          "n": 50
+        },
+        "product": {
+          "ndcg10": {
+            "mean": 0.6,
+            "lo": 0.55,
+            "hi": 0.65
+          },
+          "recall10": {
+            "mean": 0.5,
+            "lo": 0.45,
+            "hi": 0.55
+          },
+          "mrr": {
+            "mean": 0.7,
+            "lo": 0.65,
+            "hi": 0.75
+          },
+          "n": 50
+        },
+        "job": {
+          "ndcg10": {
+            "mean": 0.5,
+            "lo": 0.45,
+            "hi": 0.55
+          },
+          "recall10": {
+            "mean": 0.4,
+            "lo": 0.35,
+            "hi": 0.45
+          },
+          "mrr": {
+            "mean": 0.6,
+            "lo": 0.55,
+            "hi": 0.65
+          },
+          "n": 50
+        },
+        "open_source": {
+          "ndcg10": {
+            "mean": 0.4,
+            "lo": 0.35,
+            "hi": 0.45
+          },
+          "recall10": {
+            "mean": 0.3,
+            "lo": 0.25,
+            "hi": 0.35
+          },
+          "mrr": {
+            "mean": 0.5,
+            "lo": 0.45,
+            "hi": 0.55
+          },
+          "n": 50
+        }
+      },
+      "speed": {
+        "p50Ms": 500,
+        "p99Ms": 1000,
+        "costPer1kUsd": 0.5,
+        "latencyBasis": "wall"
+      },
+      "knownItemRanks": [
+        1,
+        1,
+        4,
+        9,
+        null,
+        2,
+        1,
+        19,
+        49,
+        null
+      ]
+    }
+  ],
+  "routers": [
+    {
+      "router": "haiku",
+      "accuracy": 0.9,
+      "n": 200,
+      "confusion": [
+        [
+          45,
+          1.6666666666666667,
+          1.6666666666666667,
+          1.6666666666666667
+        ],
+        [
+          1.6666666666666667,
+          45,
+          1.6666666666666667,
+          1.6666666666666667
+        ],
+        [
+          1.6666666666666667,
+          1.6666666666666667,
+          45,
+          1.6666666666666667
+        ],
+        [
+          1.6666666666666667,
+          1.6666666666666667,
+          1.6666666666666667,
+          45
+        ]
+      ],
+      "speed": {
+        "p50Ms": 1000,
+        "p99Ms": 2000,
+        "costPer1kUsd": 0.5,
+        "latencyBasis": "api"
+      }
+    },
+    {
+      "router": "jev",
+      "accuracy": 0.8,
+      "n": 200,
+      "confusion": [
+        [
+          40,
+          3.3333333333333335,
+          3.3333333333333335,
+          3.3333333333333335
+        ],
+        [
+          3.3333333333333335,
+          40,
+          3.3333333333333335,
+          3.3333333333333335
+        ],
+        [
+          3.3333333333333335,
+          3.3333333333333335,
+          40,
+          3.3333333333333335
+        ],
+        [
+          3.3333333333333335,
+          3.3333333333333335,
+          3.3333333333333335,
+          40
+        ]
+      ],
+      "speed": {
+        "p50Ms": 100,
+        "p99Ms": 200,
+        "costPer1kUsd": 0.01,
+        "latencyBasis": "wall"
+      }
+    }
+  ],
+  "calibration": [
+    {
+      "lo": 0,
+      "hi": 0.1,
+      "n": 20,
+      "meanConfidence": 0.05,
+      "accuracy": 0.1
+    },
+    {
+      "lo": 0.1,
+      "hi": 0.2,
+      "n": 20,
+      "meanConfidence": 0.15,
+      "accuracy": 0.2
+    },
+    {
+      "lo": 0.2,
+      "hi": 0.3,
+      "n": 20,
+      "meanConfidence": 0.25,
+      "accuracy": 0.3
+    },
+    {
+      "lo": 0.3,
+      "hi": 0.4,
+      "n": 20,
+      "meanConfidence": 0.35,
+      "accuracy": 0.4
+    },
+    {
+      "lo": 0.4,
+      "hi": 0.5,
+      "n": 20,
+      "meanConfidence": 0.45,
+      "accuracy": 0.5
+    },
+    {
+      "lo": 0.5,
+      "hi": 0.6,
+      "n": 20,
+      "meanConfidence": 0.55,
+      "accuracy": 0.6
+    },
+    {
+      "lo": 0.6,
+      "hi": 0.7,
+      "n": 20,
+      "meanConfidence": 0.65,
+      "accuracy": 0.7
+    },
+    {
+      "lo": 0.7,
+      "hi": 0.8,
+      "n": 20,
+      "meanConfidence": 0.75,
+      "accuracy": 0.8
+    },
+    {
+      "lo": 0.8,
+      "hi": 0.9,
+      "n": 20,
+      "meanConfidence": 0.85,
+      "accuracy": 0.9
+    },
+    {
+      "lo": 0.9,
+      "hi": 1,
+      "n": 20,
+      "meanConfidence": 0.95,
+      "accuracy": 1
+    }
+  ],
+  "hypotheses": [
+    {
+      "id": "H1",
+      "statement": "Jev Score reaches at least 90% of Claude Haiku's nDCG@10 as a reranker.",
+      "verdict": "rejected",
+      "evidence": "Jev 0.60 vs Haiku 0.70 (86%)."
+    },
+    {
+      "id": "H2",
+      "statement": "Jev Score's p50 latency for 100 candidates is under 10% of Haiku's.",
+      "verdict": "supported",
+      "evidence": "500 ms vs 8,000 ms (6%)."
+    },
+    {
+      "id": "H3",
+      "statement": "Jev Choice matches Haiku within 3 points of accuracy on intent routing.",
+      "verdict": "rejected",
+      "evidence": "80% vs 90%."
+    },
+    {
+      "id": "H4",
+      "statement": "Jev beats the open-source cross-encoder on accuracy.",
+      "verdict": "pending",
+      "evidence": "Fixture: no data."
+    }
+  ],
+  "explorer": {
+    "queries": [
+      {
+        "id": "fx-0",
+        "text": "who else does AI bookkeeping for small agencies",
+        "intent": "competitor",
+        "sourceUrl": "https://news.ycombinator.com/item?id=40000000",
+        "knownAnswer": 64,
+        "rankings": {
+          "none": [
+            {
+              "id": 5,
+              "grade": 0
+            },
+            {
+              "id": 19,
+              "grade": 1
+            },
+            {
+              "id": 32,
+              "grade": 2
+            },
+            {
+              "id": 62,
+              "grade": 0
+            },
+            {
+              "id": 73,
+              "grade": 1
+            },
+            {
+              "id": 85,
+              "grade": 2
+            },
+            {
+              "id": 98,
+              "grade": 0
+            },
+            {
+              "id": 110,
+              "grade": 1
+            },
+            {
+              "id": 119,
+              "grade": 2
+            },
+            {
+              "id": 141,
+              "grade": null
+            }
+          ],
+          "bge": [
+            {
+              "id": 31,
+              "grade": 1
+            },
+            {
+              "id": 52,
+              "grade": 2
+            },
+            {
+              "id": 72,
+              "grade": 0
+            },
+            {
+              "id": 82,
+              "grade": 1
+            },
+            {
+              "id": 91,
+              "grade": 2
+            },
+            {
+              "id": 105,
+              "grade": 0
+            },
+            {
+              "id": 116,
+              "grade": 1
+            },
+            {
+              "id": 138,
+              "grade": 2
+            },
+            {
+              "id": 146,
+              "grade": 0
+            },
+            {
+              "id": 160,
+              "grade": null
+            }
+          ],
+          "haiku": [
+            {
+              "id": 64,
+              "grade": 2
+            },
+            {
+              "id": 76,
+              "grade": 0
+            },
+            {
+              "id": 90,
+              "grade": 1
+            },
+            {
+              "id": 102,
+              "grade": 2
+            },
+            {
+              "id": 112,
+              "grade": 0
+            },
+            {
+              "id": 134,
+              "grade": 1
+            },
+            {
+              "id": 143,
+              "grade": 2
+            },
+            {
+              "id": 149,
+              "grade": 0
+            },
+            {
+              "id": 168,
+              "grade": 1
+            },
+            {
+              "id": 181,
+              "grade": null
+            }
+          ],
+          "jev": [
+            {
+              "id": 85,
+              "grade": 0
+            },
+            {
+              "id": 98,
+              "grade": 1
+            },
+            {
+              "id": 110,
+              "grade": 2
+            },
+            {
+              "id": 119,
+              "grade": 0
+            },
+            {
+              "id": 141,
+              "grade": 1
+            },
+            {
+              "id": 147,
+              "grade": 2
+            },
+            {
+              "id": 164,
+              "grade": 0
+            },
+            {
+              "id": 172,
+              "grade": 1
+            },
+            {
+              "id": 188,
+              "grade": 2
+            },
+            {
+              "id": 201,
+              "grade": null
+            }
+          ]
+        }
+      },
+      {
+        "id": "fx-1",
+        "text": "a company that helps restaurants manage inventory with computer vision",
+        "intent": "competitor",
+        "sourceUrl": "https://news.ycombinator.com/item?id=40000001",
+        "knownAnswer": 248,
+        "rankings": {
+          "none": [
+            {
+              "id": 181,
+              "grade": 0
+            },
+            {
+              "id": 198,
+              "grade": 1
+            },
+            {
+              "id": 226,
+              "grade": 2
+            },
+            {
+              "id": 245,
+              "grade": 0
+            },
+            {
+              "id": 258,
+              "grade": 1
+            },
+            {
+              "id": 282,
+              "grade": 2
+            },
+            {
+              "id": 326,
+              "grade": 0
+            },
+            {
+              "id": 356,
+              "grade": 1
+            },
+            {
+              "id": 403,
+              "grade": 2
+            },
+            {
+              "id": 409,
+              "grade": null
+            }
+          ],
+          "bge": [
+            {
+              "id": 201,
+              "grade": 1
+            },
+            {
+              "id": 240,
+              "grade": 2
+            },
+            {
+              "id": 249,
+              "grade": 0
+            },
+            {
+              "id": 270,
+              "grade": 1
+            },
+            {
+              "id": 306,
+              "grade": 2
+            },
+            {
+              "id": 347,
+              "grade": 0
+            },
+            {
+              "id": 402,
+              "grade": 1
+            },
+            {
+              "id": 407,
+              "grade": 2
+            },
+            {
+              "id": 415,
+              "grade": 0
+            },
+            {
+              "id": 432,
+              "grade": null
+            }
+          ],
+          "haiku": [
+            {
+              "id": 248,
+              "grade": 2
+            },
+            {
+              "id": 259,
+              "grade": 0
+            },
+            {
+              "id": 304,
+              "grade": 1
+            },
+            {
+              "id": 343,
+              "grade": 2
+            },
+            {
+              "id": 395,
+              "grade": 0
+            },
+            {
+              "id": 405,
+              "grade": 1
+            },
+            {
+              "id": 414,
+              "grade": 2
+            },
+            {
+              "id": 428,
+              "grade": 0
+            },
+            {
+              "id": 440,
+              "grade": 1
+            },
+            {
+              "id": 445,
+              "grade": null
+            }
+          ],
+          "jev": [
+            {
+              "id": 282,
+              "grade": 0
+            },
+            {
+              "id": 326,
+              "grade": 1
+            },
+            {
+              "id": 356,
+              "grade": 2
+            },
+            {
+              "id": 403,
+              "grade": 0
+            },
+            {
+              "id": 409,
+              "grade": 1
+            },
+            {
+              "id": 417,
+              "grade": 2
+            },
+            {
+              "id": 438,
+              "grade": 0
+            },
+            {
+              "id": 444,
+              "grade": 1
+            },
+            {
+              "id": 461,
+              "grade": 2
+            },
+            {
+              "id": 469,
+              "grade": null
+            }
+          ]
+        }
+      },
+      {
+        "id": "fx-2",
+        "text": "is there a tool to catch flaky tests in CI",
+        "intent": "product",
+        "sourceUrl": "https://news.ycombinator.com/item?id=40000002",
+        "knownAnswer": null,
+        "rankings": {
+          "none": [
+            {
+              "id": 445,
+              "grade": 0
+            },
+            {
+              "id": 464,
+              "grade": 1
+            },
+            {
+              "id": 470,
+              "grade": 2
+            },
+            {
+              "id": 482,
+              "grade": 0
+            },
+            {
+              "id": 488,
+              "grade": 1
+            },
+            {
+              "id": 492,
+              "grade": 2
+            },
+            {
+              "id": 500,
+              "grade": 0
+            },
+            {
+              "id": 508,
+              "grade": 1
+            },
+            {
+              "id": 522,
+              "grade": 2
+            },
+            {
+              "id": 540,
+              "grade": null
+            }
+          ],
+          "bge": [
+            {
+              "id": 469,
+              "grade": 1
+            },
+            {
+              "id": 481,
+              "grade": 2
+            },
+            {
+              "id": 486,
+              "grade": 0
+            },
+            {
+              "id": 491,
+              "grade": 1
+            },
+            {
+              "id": 497,
+              "grade": 2
+            },
+            {
+              "id": 505,
+              "grade": 0
+            },
+            {
+              "id": 517,
+              "grade": 1
+            },
+            {
+              "id": 534,
+              "grade": 2
+            },
+            {
+              "id": 552,
+              "grade": 0
+            },
+            {
+              "id": 566,
+              "grade": null
+            }
+          ],
+          "haiku": [
+            {
+              "id": 484,
+              "grade": 2
+            },
+            {
+              "id": 490,
+              "grade": 0
+            },
+            {
+              "id": 493,
+              "grade": 1
+            },
+            {
+              "id": 503,
+              "grade": 2
+            },
+            {
+              "id": 516,
+              "grade": 0
+            },
+            {
+              "id": 532,
+              "grade": 1
+            },
+            {
+              "id": 549,
+              "grade": 2
+            },
+            {
+              "id": 563,
+              "grade": 0
+            },
+            {
+              "id": 574,
+              "grade": 1
+            },
+            {
+              "id": 578,
+              "grade": null
+            }
+          ],
+          "jev": [
+            {
+              "id": 492,
+              "grade": 0
+            },
+            {
+              "id": 500,
+              "grade": 1
+            },
+            {
+              "id": 508,
+              "grade": 2
+            },
+            {
+              "id": 522,
+              "grade": 0
+            },
+            {
+              "id": 540,
+              "grade": 1
+            },
+            {
+              "id": 555,
+              "grade": 2
+            },
+            {
+              "id": 571,
+              "grade": 0
+            },
+            {
+              "id": 577,
+              "grade": 1
+            },
+            {
+              "id": 583,
+              "grade": 2
+            },
+            {
+              "id": 588,
+              "grade": null
+            }
+          ]
+        }
+      },
+      {
+        "id": "fx-3",
+        "text": "alternative to Zapier for internal workflows",
+        "intent": "product",
+        "sourceUrl": "https://news.ycombinator.com/item?id=40000003",
+        "knownAnswer": null,
+        "rankings": {
+          "none": [
+            {
+              "id": 578,
+              "grade": 0
+            },
+            {
+              "id": 585,
+              "grade": 1
+            },
+            {
+              "id": 595,
+              "grade": 2
+            },
+            {
+              "id": 608,
+              "grade": 0
+            },
+            {
+              "id": 616,
+              "grade": 1
+            },
+            {
+              "id": 626,
+              "grade": 2
+            },
+            {
+              "id": 634,
+              "grade": 0
+            },
+            {
+              "id": 641,
+              "grade": 1
+            },
+            {
+              "id": 647,
+              "grade": 2
+            },
+            {
+              "id": 664,
+              "grade": null
+            }
+          ],
+          "bge": [
+            {
+              "id": 588,
+              "grade": 1
+            },
+            {
+              "id": 603,
+              "grade": 2
+            },
+            {
+              "id": 615,
+              "grade": 0
+            },
+            {
+              "id": 622,
+              "grade": 1
+            },
+            {
+              "id": 633,
+              "grade": 2
+            },
+            {
+              "id": 639,
+              "grade": 0
+            },
+            {
+              "id": 643,
+              "grade": 1
+            },
+            {
+              "id": 662,
+              "grade": 2
+            },
+            {
+              "id": 673,
+              "grade": 0
+            },
+            {
+              "id": 687,
+              "grade": null
+            }
+          ],
+          "haiku": [
+            {
+              "id": 613,
+              "grade": 2
+            },
+            {
+              "id": 619,
+              "grade": 0
+            },
+            {
+              "id": 628,
+              "grade": 1
+            },
+            {
+              "id": 636,
+              "grade": 2
+            },
+            {
+              "id": 642,
+              "grade": 0
+            },
+            {
+              "id": 653,
+              "grade": 1
+            },
+            {
+              "id": 670,
+              "grade": 2
+            },
+            {
+              "id": 681,
+              "grade": 0
+            },
+            {
+              "id": 691,
+              "grade": 1
+            },
+            {
+              "id": 702,
+              "grade": null
+            }
+          ],
+          "jev": [
+            {
+              "id": 626,
+              "grade": 0
+            },
+            {
+              "id": 634,
+              "grade": 1
+            },
+            {
+              "id": 641,
+              "grade": 2
+            },
+            {
+              "id": 647,
+              "grade": 0
+            },
+            {
+              "id": 664,
+              "grade": 1
+            },
+            {
+              "id": 677,
+              "grade": 2
+            },
+            {
+              "id": 688,
+              "grade": 0
+            },
+            {
+              "id": 695,
+              "grade": 1
+            },
+            {
+              "id": 705,
+              "grade": 2
+            },
+            {
+              "id": 719,
+              "grade": null
+            }
+          ]
+        }
+      },
+      {
+        "id": "fx-4",
+        "text": "startups hiring engineers who know Go, Kubernetes, Postgres, AWS, remote-friendly",
+        "intent": "job",
+        "sourceUrl": "https://news.ycombinator.com/item?id=40000004",
+        "knownAnswer": null,
+        "rankings": {
+          "none": [
+            {
+              "id": 702,
+              "grade": 0
+            },
+            {
+              "id": 709,
+              "grade": 1
+            },
+            {
+              "id": 727,
+              "grade": 2
+            },
+            {
+              "id": 740,
+              "grade": 0
+            },
+            {
+              "id": 751,
+              "grade": 1
+            },
+            {
+              "id": 760,
+              "grade": 2
+            },
+            {
+              "id": 763,
+              "grade": 0
+            },
+            {
+              "id": 773,
+              "grade": 1
+            },
+            {
+              "id": 782,
+              "grade": 2
+            },
+            {
+              "id": 789,
+              "grade": null
+            }
+          ],
+          "bge": [
+            {
+              "id": 719,
+              "grade": 1
+            },
+            {
+              "id": 732,
+              "grade": 2
+            },
+            {
+              "id": 749,
+              "grade": 0
+            },
+            {
+              "id": 756,
+              "grade": 1
+            },
+            {
+              "id": 762,
+              "grade": 2
+            },
+            {
+              "id": 767,
+              "grade": 0
+            },
+            {
+              "id": 781,
+              "grade": 1
+            },
+            {
+              "id": 787,
+              "grade": 2
+            },
+            {
+              "id": 791,
+              "grade": 0
+            },
+            {
+              "id": 807,
+              "grade": null
+            }
+          ],
+          "haiku": [
+            {
+              "id": 748,
+              "grade": 2
+            },
+            {
+              "id": 755,
+              "grade": 0
+            },
+            {
+              "id": 761,
+              "grade": 1
+            },
+            {
+              "id": 764,
+              "grade": 2
+            },
+            {
+              "id": 774,
+              "grade": 0
+            },
+            {
+              "id": 786,
+              "grade": 1
+            },
+            {
+              "id": 790,
+              "grade": 2
+            },
+            {
+              "id": 802,
+              "grade": 0
+            },
+            {
+              "id": 811,
+              "grade": 1
+            },
+            {
+              "id": 817,
+              "grade": null
+            }
+          ],
+          "jev": [
+            {
+              "id": 760,
+              "grade": 0
+            },
+            {
+              "id": 763,
+              "grade": 1
+            },
+            {
+              "id": 773,
+              "grade": 2
+            },
+            {
+              "id": 782,
+              "grade": 0
+            },
+            {
+              "id": 789,
+              "grade": 1
+            },
+            {
+              "id": 797,
+              "grade": 2
+            },
+            {
+              "id": 808,
+              "grade": 0
+            },
+            {
+              "id": 815,
+              "grade": 1
+            },
+            {
+              "id": 833,
+              "grade": 2
+            },
+            {
+              "id": 847,
+              "grade": null
+            }
+          ]
+        }
+      },
+      {
+        "id": "fx-5",
+        "text": "startups hiring engineers who know Python, PyTorch, CUDA, C++, in San Francisco",
+        "intent": "job",
+        "sourceUrl": "https://news.ycombinator.com/item?id=40000005",
+        "knownAnswer": null,
+        "rankings": {
+          "none": [
+            {
+              "id": 817,
+              "grade": 0
+            },
+            {
+              "id": 834,
+              "grade": 1
+            },
+            {
+              "id": 848,
+              "grade": 2
+            },
+            {
+              "id": 856,
+              "grade": 0
+            },
+            {
+              "id": 862,
+              "grade": 1
+            },
+            {
+              "id": 866,
+              "grade": 2
+            },
+            {
+              "id": 872,
+              "grade": 0
+            },
+            {
+              "id": 888,
+              "grade": 1
+            },
+            {
+              "id": 898,
+              "grade": 2
+            },
+            {
+              "id": 902,
+              "grade": null
+            }
+          ],
+          "bge": [
+            {
+              "id": 847,
+              "grade": 1
+            },
+            {
+              "id": 851,
+              "grade": 2
+            },
+            {
+              "id": 861,
+              "grade": 0
+            },
+            {
+              "id": 865,
+              "grade": 1
+            },
+            {
+              "id": 871,
+              "grade": 2
+            },
+            {
+              "id": 884,
+              "grade": 0
+            },
+            {
+              "id": 896,
+              "grade": 1
+            },
+            {
+              "id": 901,
+              "grade": 2
+            },
+            {
+              "id": 910,
+              "grade": 0
+            },
+            {
+              "id": 915,
+              "grade": null
+            }
+          ],
+          "haiku": [
+            {
+              "id": 857,
+              "grade": 2
+            },
+            {
+              "id": 864,
+              "grade": 0
+            },
+            {
+              "id": 869,
+              "grade": 1
+            },
+            {
+              "id": 878,
+              "grade": 2
+            },
+            {
+              "id": 889,
+              "grade": 0
+            },
+            {
+              "id": 900,
+              "grade": 1
+            },
+            {
+              "id": 908,
+              "grade": 2
+            },
+            {
+              "id": 914,
+              "grade": 0
+            },
+            {
+              "id": 922,
+              "grade": 1
+            },
+            {
+              "id": 928,
+              "grade": null
+            }
+          ],
+          "jev": [
+            {
+              "id": 866,
+              "grade": 0
+            },
+            {
+              "id": 872,
+              "grade": 1
+            },
+            {
+              "id": 888,
+              "grade": 2
+            },
+            {
+              "id": 898,
+              "grade": 0
+            },
+            {
+              "id": 902,
+              "grade": 1
+            },
+            {
+              "id": 913,
+              "grade": 2
+            },
+            {
+              "id": 921,
+              "grade": 0
+            },
+            {
+              "id": 925,
+              "grade": 1
+            },
+            {
+              "id": 932,
+              "grade": 2
+            },
+            {
+              "id": 937,
+              "grade": null
+            }
+          ]
+        }
+      },
+      {
+        "id": "fx-6",
+        "text": "open-source YC projects I could contribute to in Rust",
+        "intent": "open_source",
+        "sourceUrl": "https://news.ycombinator.com/item?id=40000006",
+        "knownAnswer": null,
+        "rankings": {
+          "none": [
+            {
+              "id": 928,
+              "grade": 0
+            },
+            {
+              "id": 934,
+              "grade": 1
+            },
+            {
+              "id": 938,
+              "grade": 2
+            },
+            {
+              "id": 944,
+              "grade": 0
+            },
+            {
+              "id": 960,
+              "grade": 1
+            },
+            {
+              "id": 964,
+              "grade": 2
+            },
+            {
+              "id": 972,
+              "grade": 0
+            },
+            {
+              "id": 977,
+              "grade": 1
+            },
+            {
+              "id": 985,
+              "grade": 2
+            },
+            {
+              "id": 989,
+              "grade": null
+            }
+          ],
+          "bge": [
+            {
+              "id": 937,
+              "grade": 1
+            },
+            {
+              "id": 943,
+              "grade": 2
+            },
+            {
+              "id": 952,
+              "grade": 0
+            },
+            {
+              "id": 963,
+              "grade": 1
+            },
+            {
+              "id": 967,
+              "grade": 2
+            },
+            {
+              "id": 974,
+              "grade": 0
+            },
+            {
+              "id": 984,
+              "grade": 1
+            },
+            {
+              "id": 988,
+              "grade": 2
+            },
+            {
+              "id": 991,
+              "grade": 0
+            },
+            {
+              "id": 996,
+              "grade": null
+            }
+          ],
+          "haiku": [
+            {
+              "id": 949,
+              "grade": 2
+            },
+            {
+              "id": 962,
+              "grade": 0
+            },
+            {
+              "id": 966,
+              "grade": 1
+            },
+            {
+              "id": 973,
+              "grade": 2
+            },
+            {
+              "id": 978,
+              "grade": 0
+            },
+            {
+              "id": 987,
+              "grade": 1
+            },
+            {
+              "id": 990,
+              "grade": 2
+            },
+            {
+              "id": 995,
+              "grade": 0
+            },
+            {
+              "id": 999,
+              "grade": 1
+            },
+            {
+              "id": 1010,
+              "grade": null
+            }
+          ],
+          "jev": [
+            {
+              "id": 964,
+              "grade": 0
+            },
+            {
+              "id": 972,
+              "grade": 1
+            },
+            {
+              "id": 977,
+              "grade": 2
+            },
+            {
+              "id": 985,
+              "grade": 0
+            },
+            {
+              "id": 989,
+              "grade": 1
+            },
+            {
+              "id": 994,
+              "grade": 2
+            },
+            {
+              "id": 997,
+              "grade": 0
+            },
+            {
+              "id": 1009,
+              "grade": 1
+            },
+            {
+              "id": 1018,
+              "grade": 2
+            },
+            {
+              "id": 1030,
+              "grade": null
+            }
+          ]
+        }
+      },
+      {
+        "id": "fx-7",
+        "text": "open source observability tools",
+        "intent": "open_source",
+        "sourceUrl": "https://news.ycombinator.com/item?id=40000007",
+        "knownAnswer": null,
+        "rankings": {
+          "none": [
+            {
+              "id": 1010,
+              "grade": 0
+            },
+            {
+              "id": 1020,
+              "grade": 1
+            },
+            {
+              "id": 1032,
+              "grade": 2
+            },
+            {
+              "id": 1037,
+              "grade": 0
+            },
+            {
+              "id": 1042,
+              "grade": 1
+            },
+            {
+              "id": 1047,
+              "grade": 2
+            },
+            {
+              "id": 1052,
+              "grade": 0
+            },
+            {
+              "id": 1056,
+              "grade": 1
+            },
+            {
+              "id": 1068,
+              "grade": 2
+            },
+            {
+              "id": 1079,
+              "grade": null
+            }
+          ],
+          "bge": [
+            {
+              "id": 1030,
+              "grade": 1
+            },
+            {
+              "id": 1034,
+              "grade": 2
+            },
+            {
+              "id": 1041,
+              "grade": 0
+            },
+            {
+              "id": 1044,
+              "grade": 1
+            },
+            {
+              "id": 1051,
+              "grade": 2
+            },
+            {
+              "id": 1055,
+              "grade": 0
+            },
+            {
+              "id": 1065,
+              "grade": 1
+            },
+            {
+              "id": 1076,
+              "grade": 2
+            },
+            {
+              "id": 1081,
+              "grade": 0
+            },
+            {
+              "id": 1096,
+              "grade": null
+            }
+          ],
+          "haiku": [
+            {
+              "id": 1038,
+              "grade": 2
+            },
+            {
+              "id": 1043,
+              "grade": 0
+            },
+            {
+              "id": 1049,
+              "grade": 1
+            },
+            {
+              "id": 1053,
+              "grade": 2
+            },
+            {
+              "id": 1063,
+              "grade": 0
+            },
+            {
+              "id": 1071,
+              "grade": 1
+            },
+            {
+              "id": 1080,
+              "grade": 2
+            },
+            {
+              "id": 1093,
+              "grade": 0
+            },
+            {
+              "id": 1098,
+              "grade": 1
+            },
+            {
+              "id": 1103,
+              "grade": null
+            }
+          ],
+          "jev": [
+            {
+              "id": 1047,
+              "grade": 0
+            },
+            {
+              "id": 1052,
+              "grade": 1
+            },
+            {
+              "id": 1056,
+              "grade": 2
+            },
+            {
+              "id": 1068,
+              "grade": 0
+            },
+            {
+              "id": 1079,
+              "grade": 1
+            },
+            {
+              "id": 1082,
+              "grade": 2
+            },
+            {
+              "id": 1097,
+              "grade": 0
+            },
+            {
+              "id": 1101,
+              "grade": 1
+            },
+            {
+              "id": 1184,
+              "grade": 2
+            },
+            {
+              "id": 1202,
+              "grade": null
+            }
+          ]
+        }
+      }
+    ],
+    "companies": {
+      "5": {
+        "id": 5,
+        "name": "CircuitHub",
+        "oneLiner": "On-Demand Electronics Manufacturing",
+        "batchShort": "W12"
+      },
+      "19": {
+        "id": 19,
+        "name": "Rescale",
+        "oneLiner": "High Performance Computing Built for the Cloud",
+        "batchShort": "W12"
+      },
+      "31": {
+        "id": 31,
+        "name": "Shoptiques",
+        "oneLiner": "Shoptiques.com lets you shop the world's best local boutiques online.",
+        "batchShort": "W12"
+      },
+      "32": {
+        "id": 32,
+        "name": "CleverDeck",
+        "oneLiner": "Collaborate with an artist to commission original artwork you'll live…",
+        "batchShort": "W12"
+      },
+      "52": {
+        "id": 52,
+        "name": "Per Vices",
+        "oneLiner": "Building Mission Critical Software Defined Radio products.",
+        "batchShort": "W12"
+      },
+      "62": {
+        "id": 62,
+        "name": "Medmonk",
+        "oneLiner": "A tool for pharmacists to find funding for patients who are unable to…",
+        "batchShort": "W12"
+      },
+      "64": {
+        "id": 64,
+        "name": "Y Combinator",
+        "oneLiner": "Make something people want.",
+        "batchShort": ""
+      },
+      "72": {
+        "id": 72,
+        "name": "Apollo",
+        "oneLiner": "Apollo helps engineering teams accelerate delivery",
+        "batchShort": "S11"
+      },
+      "73": {
+        "id": 73,
+        "name": "HackerRank",
+        "oneLiner": "Change the world to value skills over pedigree",
+        "batchShort": "S11"
+      },
+      "76": {
+        "id": 76,
+        "name": "OneSignal",
+        "oneLiner": "Engage customers through personalized omni-channel messaging",
+        "batchShort": "S11"
+      },
+      "82": {
+        "id": 82,
+        "name": "Streak",
+        "oneLiner": "Streak transforms Gmail into a powerful CRM",
+        "batchShort": "S11"
+      },
+      "85": {
+        "id": 85,
+        "name": "Quartzy",
+        "oneLiner": "Marketplace for life science supplies.",
+        "batchShort": "S11"
+      },
+      "90": {
+        "id": 90,
+        "name": "AgileMD",
+        "oneLiner": "Predictive analytics and clinical pathways for hospitals",
+        "batchShort": "S11"
+      },
+      "91": {
+        "id": 91,
+        "name": "Clerky",
+        "oneLiner": "Makes legal paperwork easy for startups and their attorneys.",
+        "batchShort": "S11"
+      },
+      "98": {
+        "id": 98,
+        "name": "GoCardless",
+        "oneLiner": "We’re building the world’s bank payment network.",
+        "batchShort": "S11"
+      },
+      "102": {
+        "id": 102,
+        "name": "Sift",
+        "oneLiner": "The Leader in Digital Trust & Safety",
+        "batchShort": "S11"
+      },
+      "105": {
+        "id": 105,
+        "name": "LeadGenius",
+        "oneLiner": "LeadGenius is an account-based marketing and lead generation…",
+        "batchShort": "S11"
+      },
+      "110": {
+        "id": 110,
+        "name": "MixRank",
+        "oneLiner": "Data products for sales, marketing, finance, recruiting, and more.",
+        "batchShort": "S11"
+      },
+      "112": {
+        "id": 112,
+        "name": "Videopixie",
+        "oneLiner": "Marketplace for Video Production Services.  We help you hire the best…",
+        "batchShort": "S11"
+      },
+      "116": {
+        "id": 116,
+        "name": "Imgix",
+        "oneLiner": "The platform for your visual media.",
+        "batchShort": "S11"
+      },
+      "119": {
+        "id": 119,
+        "name": "Vidyard",
+        "oneLiner": "Video for business.",
+        "batchShort": "S11"
+      },
+      "134": {
+        "id": 134,
+        "name": "SingleStore",
+        "oneLiner": "The cloud-native, operational database built for speed and scale.",
+        "batchShort": "W11"
+      },
+      "138": {
+        "id": 138,
+        "name": "Talkable",
+        "oneLiner": "Online store referrals.",
+        "batchShort": "W11"
+      },
+      "141": {
+        "id": 141,
+        "name": "Tumult",
+        "oneLiner": "Tumult is building the next generation of apps for web design. Our…",
+        "batchShort": "W11"
+      },
+      "143": {
+        "id": 143,
+        "name": "Acunote",
+        "oneLiner": "",
+        "batchShort": "W11"
+      },
+      "146": {
+        "id": 146,
+        "name": "Instapainting",
+        "oneLiner": "Custom-made artwork from artists e-commerce marketplace.",
+        "batchShort": "W11"
+      },
+      "147": {
+        "id": 147,
+        "name": "You Got Listings",
+        "oneLiner": "All-in-one apartment Marketing Platform for brokerages and landlords.",
+        "batchShort": "W11"
+      },
+      "149": {
+        "id": 149,
+        "name": "Tremendous",
+        "oneLiner": "How businesses send money to people at scale. Fast, free, global.",
+        "batchShort": "W11"
+      },
+      "160": {
+        "id": 160,
+        "name": "Close",
+        "oneLiner": "CRM and sales automation tools for startups and SMBs",
+        "batchShort": "W11"
+      },
+      "164": {
+        "id": 164,
+        "name": "Mino Games",
+        "oneLiner": "Mobile games company",
+        "batchShort": "W11"
+      },
+      "168": {
+        "id": 168,
+        "name": "GOAT Group",
+        "oneLiner": "Platform for the greatest products from the past, present and future.",
+        "batchShort": "W11"
+      },
+      "172": {
+        "id": 172,
+        "name": "Storyworth",
+        "oneLiner": "Record your family stories and print them in beautiful keepsake books.",
+        "batchShort": "W11"
+      },
+      "181": {
+        "id": 181,
+        "name": "Recurse Center",
+        "oneLiner": "The retreat where curious programmers recharge and grow",
+        "batchShort": "S10"
+      },
+      "188": {
+        "id": 188,
+        "name": "AnyList",
+        "oneLiner": "One app for stress-free shopping, cooking, and meal planning.",
+        "batchShort": "S10"
+      },
+      "198": {
+        "id": 198,
+        "name": "Docker",
+        "oneLiner": "Software development platform.",
+        "batchShort": "S10"
+      },
+      "201": {
+        "id": 201,
+        "name": "WorkFlowy",
+        "oneLiner": "WorkFlowy is a better way to manage information. It provides a simple…",
+        "batchShort": "S10"
+      },
+      "226": {
+        "id": 226,
+        "name": "OwnLocal",
+        "oneLiner": "OwnLocal automates marketing for over 129,000 SMBs through 3,300…",
+        "batchShort": "W10"
+      },
+      "240": {
+        "id": 240,
+        "name": "Stripe",
+        "oneLiner": "Economic infrastructure for the internet.",
+        "batchShort": "S09"
+      },
+      "245": {
+        "id": 245,
+        "name": "Directed Edge",
+        "oneLiner": "Product recommendations.",
+        "batchShort": "S09"
+      },
+      "248": {
+        "id": 248,
+        "name": "Mixpanel",
+        "oneLiner": "Mixpanel is event analytics for builders that need answers.",
+        "batchShort": "S09"
+      },
+      "249": {
+        "id": 249,
+        "name": "Olark",
+        "oneLiner": "Olark gives you an AI agent that works your marketing funnel 24/7",
+        "batchShort": "S09"
+      },
+      "258": {
+        "id": 258,
+        "name": "RentHop",
+        "oneLiner": "Apartment rental marketplace",
+        "batchShort": "S09"
+      },
+      "259": {
+        "id": 259,
+        "name": "Lingt",
+        "oneLiner": "Lingt provided a web-based platform for learning languages leveraging…",
+        "batchShort": "S09"
+      },
+      "270": {
+        "id": 270,
+        "name": "Volantio",
+        "oneLiner": "Post-booking revenue and capacity optimization for airlines…",
+        "batchShort": "W09"
+      },
+      "282": {
+        "id": 282,
+        "name": "Poll Everywhere",
+        "oneLiner": "Interactive meetings and presentations",
+        "batchShort": "S08"
+      },
+      "304": {
+        "id": 304,
+        "name": "RescueTime",
+        "oneLiner": "Take Back Control of your Time",
+        "batchShort": "W08"
+      },
+      "306": {
+        "id": 306,
+        "name": "Ninite",
+        "oneLiner": "Simple third-party app patching and deployment for Windows.",
+        "batchShort": "W08"
+      },
+      "326": {
+        "id": 326,
+        "name": "Blue Frog Gaming",
+        "oneLiner": "",
+        "batchShort": "S07"
+      },
+      "343": {
+        "id": 343,
+        "name": "Virtualmin",
+        "oneLiner": "",
+        "batchShort": "W07"
+      },
+      "347": {
+        "id": 347,
+        "name": "Buxfer",
+        "oneLiner": "Buxfer helps you make better spending decisions by making it easy to…",
+        "batchShort": "W07"
+      },
+      "356": {
+        "id": 356,
+        "name": "Scribd",
+        "oneLiner": "World's largest online library.",
+        "batchShort": "S06"
+      },
+      "395": {
+        "id": 395,
+        "name": "Rainforest",
+        "oneLiner": "no-code end-to-end testing that integrates with any CI/CD pipeline",
+        "batchShort": "S12"
+      },
+      "402": {
+        "id": 402,
+        "name": "Mth Sense",
+        "oneLiner": "We're a mobile on-device profiling and ad-serving platform initially…",
+        "batchShort": "S12"
+      },
+      "403": {
+        "id": 403,
+        "name": "Human Dx",
+        "oneLiner": "The Human Diagnosis Project.",
+        "batchShort": "S12"
+      },
+      "405": {
+        "id": 405,
+        "name": "HealthSherpa",
+        "oneLiner": "Private sector Healthcare.gov.",
+        "batchShort": "S12"
+      },
+      "407": {
+        "id": 407,
+        "name": "Mattermost",
+        "oneLiner": "Secure Collaboration for Technical Teams",
+        "batchShort": "S12"
+      },
+      "409": {
+        "id": 409,
+        "name": "Zentail",
+        "oneLiner": "We're making ecommerce simple connecting brands with sales channels",
+        "batchShort": "S12"
+      },
+      "414": {
+        "id": 414,
+        "name": "SmartAsset",
+        "oneLiner": "Marketplace connecting consumers to financial advisors",
+        "batchShort": "S12"
+      },
+      "415": {
+        "id": 415,
+        "name": "FundersClub",
+        "oneLiner": "Online VC",
+        "batchShort": "S12"
+      },
+      "417": {
+        "id": 417,
+        "name": "Eligible",
+        "oneLiner": "Insurance Billing APIs for Healthcare Businesses",
+        "batchShort": "S12"
+      },
+      "428": {
+        "id": 428,
+        "name": "Upwave",
+        "oneLiner": "Marketing analytics for the world's biggest brand marketers",
+        "batchShort": "S12"
+      },
+      "432": {
+        "id": 432,
+        "name": "OctaveWealth",
+        "oneLiner": "The 401(k) that helps you grow",
+        "batchShort": "S12"
+      },
+      "438": {
+        "id": 438,
+        "name": "NewsBlur",
+        "oneLiner": "NewsBlur is a personalized news reader",
+        "batchShort": "S12"
+      },
+      "440": {
+        "id": 440,
+        "name": "Submittable",
+        "oneLiner": "The best way to launch, manage and measure social impact programs",
+        "batchShort": "S12"
+      },
+      "444": {
+        "id": 444,
+        "name": "BackerKit",
+        "oneLiner": "The only end-to-end crowdfunding platform built for today’s creators",
+        "batchShort": "S12"
+      },
+      "445": {
+        "id": 445,
+        "name": "Benchling",
+        "oneLiner": "Unlocking the power of biotech with modern software for modern science",
+        "batchShort": "S12"
+      },
+      "461": {
+        "id": 461,
+        "name": "Double Robotics",
+        "oneLiner": "Telepresence robots",
+        "batchShort": "S12"
+      },
+      "464": {
+        "id": 464,
+        "name": "Plivo",
+        "oneLiner": "Voice AI Agents for customer engagement, including WhatsApp, SMS &…",
+        "batchShort": "S12"
+      },
+      "469": {
+        "id": 469,
+        "name": "9gag",
+        "oneLiner": "Make the world happier.",
+        "batchShort": "S12"
+      },
+      "470": {
+        "id": 470,
+        "name": "StyleUp",
+        "oneLiner": "StyleUp brings effortless joy to getting dressed with daily,…",
+        "batchShort": "W13"
+      },
+      "481": {
+        "id": 481,
+        "name": "Padlet",
+        "oneLiner": "Papyrus → Parchment → Paper → Padlet",
+        "batchShort": "W13"
+      },
+      "482": {
+        "id": 482,
+        "name": "Fivetran",
+        "oneLiner": "The leader in automated data movement",
+        "batchShort": "W13"
+      },
+      "484": {
+        "id": 484,
+        "name": "Lawdingo",
+        "oneLiner": "Lawdingo provides virtual paralegal services to law firms.",
+        "batchShort": "W13"
+      },
+      "486": {
+        "id": 486,
+        "name": "Cheetah",
+        "oneLiner": "Fastest, easiest, and most affordable way for small business owners…",
+        "batchShort": "W13"
+      },
+      "488": {
+        "id": 488,
+        "name": "Etleap",
+        "oneLiner": "Etleap is an ETL solution for creating perfect data pipelines.",
+        "batchShort": "W13"
+      },
+      "490": {
+        "id": 490,
+        "name": "InfluxData",
+        "oneLiner": "The platform for building and operating time series applications.",
+        "batchShort": "W13"
+      },
+      "491": {
+        "id": 491,
+        "name": "Strikingly",
+        "oneLiner": "The easiest way to create a beautiful, mobile optimized website.",
+        "batchShort": "W13"
+      },
+      "492": {
+        "id": 492,
+        "name": "Lollipuff",
+        "oneLiner": "Online Auctions for Authentic (Women's) Designer Goods",
+        "batchShort": "W13"
+      },
+      "493": {
+        "id": 493,
+        "name": "RADAR",
+        "oneLiner": "RADAR is building technology to completely transform the in-store…",
+        "batchShort": "W13"
+      },
+      "497": {
+        "id": 497,
+        "name": "Experiment",
+        "oneLiner": "crowdfunding platform for science",
+        "batchShort": "W13"
+      },
+      "500": {
+        "id": 500,
+        "name": "SimplyInsured",
+        "oneLiner": "We sell health insurance to small businesses 100% online.",
+        "batchShort": "W13"
+      },
+      "503": {
+        "id": 503,
+        "name": "Wefunder",
+        "oneLiner": "We're Robinhood for pre-IPO startups. Everyone can invest $100.",
+        "batchShort": "W13"
+      },
+      "505": {
+        "id": 505,
+        "name": "Wevorce",
+        "oneLiner": "Changing divorce for good by making it a way less horrible experience…",
+        "batchShort": "W13"
+      },
+      "508": {
+        "id": 508,
+        "name": "Goldbelly",
+        "oneLiner": "Empowering restaurants and small food makers to ship nationwide.",
+        "batchShort": "W13"
+      },
+      "516": {
+        "id": 516,
+        "name": "Watsi",
+        "oneLiner": "Watsi is the first global crowdfunding platform for medical…",
+        "batchShort": "W13"
+      },
+      "517": {
+        "id": 517,
+        "name": "7cups",
+        "oneLiner": "7 Cups is an emotional support service that matches up people that…",
+        "batchShort": "S13"
+      },
+      "522": {
+        "id": 522,
+        "name": "Asseta",
+        "oneLiner": "Marketplace for industrial spare parts and capital equipment.",
+        "batchShort": "S13"
+      },
+      "532": {
+        "id": 532,
+        "name": "EasyPost",
+        "oneLiner": "The shipping infrastructure of the internet.",
+        "batchShort": "S13"
+      },
+      "534": {
+        "id": 534,
+        "name": "Estimote, Inc.",
+        "oneLiner": "Location intelligence platform",
+        "batchShort": "S13"
+      },
+      "540": {
+        "id": 540,
+        "name": "Cratejoy",
+        "oneLiner": "Cratejoy is the platform for subscriptions",
+        "batchShort": "S13"
+      },
+      "549": {
+        "id": 549,
+        "name": "Panorama Education",
+        "oneLiner": "Improving education for every student.",
+        "batchShort": "S13"
+      },
+      "552": {
+        "id": 552,
+        "name": "Lob",
+        "oneLiner": "Lob is the only automation platform that transforms direct mail into…",
+        "batchShort": "S13"
+      },
+      "555": {
+        "id": 555,
+        "name": "Reebee",
+        "oneLiner": "Flyer app.",
+        "batchShort": "S13"
+      },
+      "563": {
+        "id": 563,
+        "name": "True Link",
+        "oneLiner": "Financial Services for Financial Caregivers.",
+        "batchShort": "S13"
+      },
+      "566": {
+        "id": 566,
+        "name": "Webflow",
+        "oneLiner": "Professional website design and publishing platform.",
+        "batchShort": "S13"
+      },
+      "571": {
+        "id": 571,
+        "name": "42",
+        "oneLiner": "Analytics stack for omnichannel retailers and brands",
+        "batchShort": "W14"
+      },
+      "574": {
+        "id": 574,
+        "name": "AirHelp",
+        "oneLiner": "AirHelp helps air passengers get compensation for delayed, cancelled…",
+        "batchShort": "W14"
+      },
+      "577": {
+        "id": 577,
+        "name": "CareMessage",
+        "oneLiner": "Patient engagement for low-income populations",
+        "batchShort": "W14"
+      },
+      "578": {
+        "id": 578,
+        "name": "AptDeco",
+        "oneLiner": "AptDeco is the easiest way to buy and sell used furniture",
+        "batchShort": "W14"
+      },
+      "583": {
+        "id": 583,
+        "name": "Cambly",
+        "oneLiner": "On-demand access to English tutors over video chat.",
+        "batchShort": "W14"
+      },
+      "585": {
+        "id": 585,
+        "name": "Noora Health",
+        "oneLiner": "Training patients and their families with health skills",
+        "batchShort": "W14"
+      },
+      "588": {
+        "id": 588,
+        "name": "CodeNow",
+        "oneLiner": "Our mission is to diversify the talent pipeline of students who…",
+        "batchShort": "W14"
+      },
+      "595": {
+        "id": 595,
+        "name": "Flexport",
+        "oneLiner": "Platform for global logistics.",
+        "batchShort": "W14"
+      },
+      "603": {
+        "id": 603,
+        "name": "MBX",
+        "oneLiner": "A global multi-brand beauty and personal care startup.",
+        "batchShort": "W14"
+      },
+      "608": {
+        "id": 608,
+        "name": "One Degree",
+        "oneLiner": "One Degree is a nonprofit organization that makes it easy for…",
+        "batchShort": "W14"
+      },
+      "613": {
+        "id": 613,
+        "name": "PiinPoint",
+        "oneLiner": "PiinPoint helps businesses find the best locations for growth",
+        "batchShort": "W14"
+      },
+      "615": {
+        "id": 615,
+        "name": "Povio",
+        "oneLiner": "Engineering and Design that Fuels Startup Success",
+        "batchShort": "W14"
+      },
+      "616": {
+        "id": 616,
+        "name": "Pushbullet",
+        "oneLiner": "Push things to your other things.",
+        "batchShort": "W14"
+      },
+      "619": {
+        "id": 619,
+        "name": "Shoobs",
+        "oneLiner": "We help you find and book tickets to great entertainment events that…",
+        "batchShort": "W14"
+      },
+      "622": {
+        "id": 622,
+        "name": "Snapdocs",
+        "oneLiner": "digital mortgage closing",
+        "batchShort": "W14"
+      },
+      "626": {
+        "id": 626,
+        "name": "Guesty",
+        "oneLiner": "The management platform for the short term rental industry.",
+        "batchShort": "W14"
+      },
+      "628": {
+        "id": 628,
+        "name": "TrueVault",
+        "oneLiner": "We make Privacy Software for SMBs.",
+        "batchShort": "W14"
+      },
+      "633": {
+        "id": 633,
+        "name": "Zidisha",
+        "oneLiner": "Direct P2P lending across the international wealth divide.",
+        "batchShort": "W14"
+      },
+      "634": {
+        "id": 634,
+        "name": "Zinc",
+        "oneLiner": "The secret backbone of e-commerce.",
+        "batchShort": "W14"
+      },
+      "636": {
+        "id": 636,
+        "name": "Algolia",
+        "oneLiner": "A developer-friendly and enterprise-grade search API.",
+        "batchShort": "W14"
+      },
+      "639": {
+        "id": 639,
+        "name": "GBatteries",
+        "oneLiner": "Enabling li-ion batteries to charge ultra fast without compromising…",
+        "batchShort": "W14"
+      },
+      "641": {
+        "id": 641,
+        "name": "MixerBox",
+        "oneLiner": "AI Super-Apps to Live Easier | The anything anytime superapps…",
+        "batchShort": "W14"
+      },
+      "642": {
+        "id": 642,
+        "name": "OpenCurriculum",
+        "oneLiner": "Helping K-12 teachers and school administrators build awesome…",
+        "batchShort": "W14"
+      },
+      "643": {
+        "id": 643,
+        "name": "Dyspatch",
+        "oneLiner": "AI Email Production - Emails on brand, guaranteed to work, fast.",
+        "batchShort": "W14"
+      },
+      "647": {
+        "id": 647,
+        "name": "Immunity Project",
+        "oneLiner": "The free HIV vaccine.",
+        "batchShort": "W14"
+      },
+      "653": {
+        "id": 653,
+        "name": "Backpack",
+        "oneLiner": "Marketplace to get stuff from overseas",
+        "batchShort": "S14"
+      },
+      "662": {
+        "id": 662,
+        "name": "Checkr",
+        "oneLiner": "People infrastructure for the future of work",
+        "batchShort": "S14"
+      },
+      "664": {
+        "id": 664,
+        "name": "Clear",
+        "oneLiner": "Fintech SaaS platform for invoices, taxes, wealth management & credit.",
+        "batchShort": "S14"
+      },
+      "670": {
+        "id": 670,
+        "name": "Flaviar",
+        "oneLiner": "Try-at-home service for fine spirits",
+        "batchShort": "S14"
+      },
+      "673": {
+        "id": 673,
+        "name": "Hyperpad",
+        "oneLiner": "Create, Share, Play Mobile Games on the iPad.",
+        "batchShort": "S14"
+      },
+      "677": {
+        "id": 677,
+        "name": "Greentoe",
+        "oneLiner": "\"Name Your Price\" for products",
+        "batchShort": "S14"
+      },
+      "681": {
+        "id": 681,
+        "name": "Protocol Labs",
+        "oneLiner": "Protocol Labs makes internet protocols: IPFS, Filecoin, and more.",
+        "batchShort": "S14"
+      },
+      "687": {
+        "id": 687,
+        "name": "MetricWire",
+        "oneLiner": "Mobile surveys for researchers",
+        "batchShort": "S14"
+      },
+      "688": {
+        "id": 688,
+        "name": "MTailor",
+        "oneLiner": "Get measured by your phone in under 30 seconds for perfect fitting…",
+        "batchShort": "S14"
+      },
+      "691": {
+        "id": 691,
+        "name": "Alchemy",
+        "oneLiner": "Nanotechnology-enabled coatings for automotive and defence sectors",
+        "batchShort": "S14"
+      },
+      "695": {
+        "id": 695,
+        "name": "PicnicAI",
+        "oneLiner": "Intelligence to accelerate human health.",
+        "batchShort": "S14"
+      },
+      "702": {
+        "id": 702,
+        "name": "SFOX",
+        "oneLiner": "Crypto-currency trading platform.",
+        "batchShort": "S14"
+      },
+      "705": {
+        "id": 705,
+        "name": "ShipBob",
+        "oneLiner": "Providing Amazon level logistics to e-commerce businesses.",
+        "batchShort": "S14"
+      },
+      "709": {
+        "id": 709,
+        "name": "SpotAngels",
+        "oneLiner": "Waze for parking",
+        "batchShort": "S14"
+      },
+      "719": {
+        "id": 719,
+        "name": "Roomstorm",
+        "oneLiner": "Real time B2B hotel room marketplace for various industries…",
+        "batchShort": "S14"
+      },
+      "727": {
+        "id": 727,
+        "name": "Front",
+        "oneLiner": "Customer communications hub for building strong relationships",
+        "batchShort": "S14"
+      },
+      "732": {
+        "id": 732,
+        "name": "Bayes Impact",
+        "oneLiner": "Tech nonprofit building the future of public services.",
+        "batchShort": "S14"
+      },
+      "740": {
+        "id": 740,
+        "name": "Qventus",
+        "oneLiner": "We automate operations for hospitals and health systems",
+        "batchShort": "W15"
+      },
+      "748": {
+        "id": 748,
+        "name": "Akido Labs",
+        "oneLiner": "Rebuilding healthcare with AI at the core",
+        "batchShort": "W15"
+      },
+      "749": {
+        "id": 749,
+        "name": "Mezmo",
+        "oneLiner": "Observability platform to control all of your log data",
+        "batchShort": "W15"
+      },
+      "751": {
+        "id": 751,
+        "name": "Magic",
+        "oneLiner": "Extremely talented assistants for busy people",
+        "batchShort": "W15"
+      },
+      "755": {
+        "id": 755,
+        "name": "Bright",
+        "oneLiner": "Sunrun for the developing world",
+        "batchShort": "W15"
+      },
+      "756": {
+        "id": 756,
+        "name": "Numerion Labs",
+        "oneLiner": "Artificial intelligence for drug discovery.",
+        "batchShort": "W15"
+      },
+      "760": {
+        "id": 760,
+        "name": "Democracy Earth",
+        "oneLiner": "Censorship resistant democracies.",
+        "batchShort": "W15"
+      },
+      "761": {
+        "id": 761,
+        "name": "The Human Utility",
+        "oneLiner": "The Human Utility seeks to eliminate water service disconnections for…",
+        "batchShort": "W15"
+      },
+      "762": {
+        "id": 762,
+        "name": "Zeitview",
+        "oneLiner": "Inspection software for renewable energy & sustainable infrastructure",
+        "batchShort": "W15"
+      },
+      "763": {
+        "id": 763,
+        "name": "Bankjoy",
+        "oneLiner": "An end-to-end digital banking solution for banks and credit unions",
+        "batchShort": "W15"
+      },
+      "764": {
+        "id": 764,
+        "name": "GiveMeTap",
+        "oneLiner": "We produce & sell stainless steel water bottles that enables people…",
+        "batchShort": "W15"
+      },
+      "767": {
+        "id": 767,
+        "name": "GrubMarket",
+        "oneLiner": "AI-powered technology enabler and digital transformer of American…",
+        "batchShort": "W15"
+      },
+      "773": {
+        "id": 773,
+        "name": "Labdoor",
+        "oneLiner": "Labdoor is building the trusted online drugstore.",
+        "batchShort": "W15"
+      },
+      "774": {
+        "id": 774,
+        "name": "Platzi",
+        "oneLiner": "Turning company knowledge into expert teams",
+        "batchShort": "W15"
+      },
+      "781": {
+        "id": 781,
+        "name": "BuildScience",
+        "oneLiner": "The operating system for commercial buildings.",
+        "batchShort": "W15"
+      },
+      "782": {
+        "id": 782,
+        "name": "ReadMe",
+        "oneLiner": "Beautiful, personalized, interactive developer hubs",
+        "batchShort": "W15"
+      },
+      "786": {
+        "id": 786,
+        "name": "Sails Co.",
+        "oneLiner": "Full-service web, mobile, & cloud studio providing professional…",
+        "batchShort": "W15"
+      },
+      "787": {
+        "id": 787,
+        "name": "SIRUM",
+        "oneLiner": "SIRUM is a “match.com” for unused medicine. We connect institutional…",
+        "batchShort": "W15"
+      },
+      "789": {
+        "id": 789,
+        "name": "Tempo",
+        "oneLiner": "Live home fitness training powered by computer vision.",
+        "batchShort": "W15"
+      },
+      "790": {
+        "id": 790,
+        "name": "TeamNote",
+        "oneLiner": "Mobile Productivity(Slack for mobile workforces)",
+        "batchShort": "W15"
+      },
+      "791": {
+        "id": 791,
+        "name": "Makrwatch",
+        "oneLiner": "Scale new user acquisition with YouTube Creators",
+        "batchShort": "W15"
+      },
+      "797": {
+        "id": 797,
+        "name": "Resolve",
+        "oneLiner": "Software to accelerate construction by finding issues in 3D BIM",
+        "batchShort": "W15"
+      },
+      "802": {
+        "id": 802,
+        "name": "Cleanly",
+        "oneLiner": "Laundry & Dry Cleaning delivered.",
+        "batchShort": "W15"
+      },
+      "807": {
+        "id": 807,
+        "name": "Quantierra",
+        "oneLiner": "Sourcing investment real estate",
+        "batchShort": "W15"
+      },
+      "808": {
+        "id": 808,
+        "name": "eBrandvalue",
+        "oneLiner": "Real-time Nielsen ratings for Brands.Accelerate marketing and product…",
+        "batchShort": "W15"
+      },
+      "811": {
+        "id": 811,
+        "name": "Giveffect",
+        "oneLiner": "Fundraising, Volunteer and Donor Management SaaS for nonprofits.",
+        "batchShort": "W15"
+      },
+      "815": {
+        "id": 815,
+        "name": "Level Frames",
+        "oneLiner": "Software eats custom framing",
+        "batchShort": "W15"
+      },
+      "817": {
+        "id": 817,
+        "name": "Meadow",
+        "oneLiner": "Point of Sale and Compliance SaaS for Cannabis Dispensaries",
+        "batchShort": "W15"
+      },
+      "833": {
+        "id": 833,
+        "name": "Tab",
+        "oneLiner": "Revolutionising the way travellers discover, plan and book a trip",
+        "batchShort": "W15"
+      },
+      "834": {
+        "id": 834,
+        "name": "Zenflow",
+        "oneLiner": "Medical device that provides a more effective, less invasive…",
+        "batchShort": "W15"
+      },
+      "847": {
+        "id": 847,
+        "name": "Flip",
+        "oneLiner": "Community-driven marketplace for sneakers.",
+        "batchShort": "W15"
+      },
+      "848": {
+        "id": 848,
+        "name": "Tara AI",
+        "oneLiner": "Meet Tara AI, your new engineering efficiency co-pilot.",
+        "batchShort": "W15"
+      },
+      "851": {
+        "id": 851,
+        "name": "NimbleRx",
+        "oneLiner": "On-demand prescription delivery.",
+        "batchShort": "W15"
+      },
+      "856": {
+        "id": 856,
+        "name": "Mashgin",
+        "oneLiner": "Self-Checkout using Computer Vision.",
+        "batchShort": "W15"
+      },
+      "857": {
+        "id": 857,
+        "name": "Shasqi",
+        "oneLiner": "Targeting Cancer with Click Chemistry",
+        "batchShort": "W15"
+      },
+      "861": {
+        "id": 861,
+        "name": "Lugg",
+        "oneLiner": "Move anything, anytime, anywhere",
+        "batchShort": "S15"
+      },
+      "862": {
+        "id": 862,
+        "name": "Teleport",
+        "oneLiner": "The Infrastructure Identity Company",
+        "batchShort": "S15"
+      },
+      "864": {
+        "id": 864,
+        "name": "teaBOT",
+        "oneLiner": "A robot that makes tea!",
+        "batchShort": "S15"
+      },
+      "865": {
+        "id": 865,
+        "name": "Leaders In Tech",
+        "oneLiner": "Become the leader your company needs.",
+        "batchShort": "S15"
+      },
+      "866": {
+        "id": 866,
+        "name": "Ironclad",
+        "oneLiner": "AI-powered contract management",
+        "batchShort": "S15"
+      },
+      "869": {
+        "id": 869,
+        "name": "New Story",
+        "oneLiner": "We pioneer solutions to end the global housing crisis by empowering…",
+        "batchShort": "S15"
+      },
+      "871": {
+        "id": 871,
+        "name": "Gemnote",
+        "oneLiner": "Gemnote is the easiest way to design, create and send custom products.",
+        "batchShort": "S15"
+      },
+      "872": {
+        "id": 872,
+        "name": "Assembly",
+        "oneLiner": "Advanced manufacturing and distribution solutions (for China-based…",
+        "batchShort": "S15"
+      },
+      "878": {
+        "id": 878,
+        "name": "SnapMagic",
+        "oneLiner": "AI-assisted electronics design",
+        "batchShort": "S15"
+      },
+      "884": {
+        "id": 884,
+        "name": "Heroic Labs",
+        "oneLiner": "Social Infrastructure for Games; Makers of Nakama game server, Satori…",
+        "batchShort": "S15"
+      },
+      "888": {
+        "id": 888,
+        "name": "Branch8",
+        "oneLiner": "Branch8 helps sellers to list and manage products on e-commerce…",
+        "batchShort": "S15"
+      },
+      "889": {
+        "id": 889,
+        "name": "Confident LIMS",
+        "oneLiner": "Laboratory Information Management System (LIMS) serving…",
+        "batchShort": "S15"
+      },
+      "896": {
+        "id": 896,
+        "name": "SunFarmer",
+        "oneLiner": "Reliable and affordable solar energy in developing countries.",
+        "batchShort": "S15"
+      },
+      "898": {
+        "id": 898,
+        "name": "Reach",
+        "oneLiner": "Long range, wireless energy distribution that scales",
+        "batchShort": "S15"
+      },
+      "900": {
+        "id": 900,
+        "name": "Tesorio",
+        "oneLiner": "Tesorio is the cash flow performance platform that helps finance…",
+        "batchShort": "S15"
+      },
+      "901": {
+        "id": 901,
+        "name": "Thrive Agritech",
+        "oneLiner": "We design and manufacture energy efficient LED lighting fixtures for…",
+        "batchShort": "S15"
+      },
+      "902": {
+        "id": 902,
+        "name": "Verge Genomics",
+        "oneLiner": "We use human data and AI to develop better drugs faster.",
+        "batchShort": "S15"
+      },
+      "908": {
+        "id": 908,
+        "name": "Bodyport",
+        "oneLiner": "Predicting and preventing heart disease.",
+        "batchShort": "S15"
+      },
+      "910": {
+        "id": 910,
+        "name": "Chaldal",
+        "oneLiner": "",
+        "batchShort": "S15"
+      },
+      "913": {
+        "id": 913,
+        "name": "Drip Capital",
+        "oneLiner": "Digital trade finance and B2B commerce company",
+        "batchShort": "S15"
+      },
+      "914": {
+        "id": 914,
+        "name": "GiveCampus",
+        "oneLiner": "The fundraising platform for schools.",
+        "batchShort": "S15"
+      },
+      "915": {
+        "id": 915,
+        "name": "Circle Medical",
+        "oneLiner": "Modern primary care via video and in-person",
+        "batchShort": "S15"
+      },
+      "921": {
+        "id": 921,
+        "name": "Markhor",
+        "oneLiner": "Markhor is a DTC company that works with craftsmen to make shoes and…",
+        "batchShort": "S15"
+      },
+      "922": {
+        "id": 922,
+        "name": "Zeplin",
+        "oneLiner": "Deliver on the Promise of Design",
+        "batchShort": "S15"
+      },
+      "925": {
+        "id": 925,
+        "name": "Fountain",
+        "oneLiner": "High volume hiring made simple",
+        "batchShort": "S15"
+      },
+      "928": {
+        "id": 928,
+        "name": "PickTrace",
+        "oneLiner": "Workforce Management for Large Farms",
+        "batchShort": "S15"
+      },
+      "932": {
+        "id": 932,
+        "name": "RedCarpetUp",
+        "oneLiner": "Credit cards for Indians that banks cannot see",
+        "batchShort": "S15"
+      },
+      "934": {
+        "id": 934,
+        "name": "Scentbird",
+        "oneLiner": "Scentbird is a luxury fragrance subscription service.",
+        "batchShort": "S15"
+      },
+      "937": {
+        "id": 937,
+        "name": "Shred Video",
+        "oneLiner": "Shred Video builds automated video & photo systems that allow…",
+        "batchShort": "S15"
+      },
+      "938": {
+        "id": 938,
+        "name": "Xendit",
+        "oneLiner": "Provides payment infrastructure for Southeast Asia",
+        "batchShort": "S15"
+      },
+      "943": {
+        "id": 943,
+        "name": "Font Awesome",
+        "oneLiner": "Icons and social logos for your website.",
+        "batchShort": "S15"
+      },
+      "944": {
+        "id": 944,
+        "name": "Go1",
+        "oneLiner": "A learning platform that enables you to train your staff or customers.",
+        "batchShort": "S15"
+      },
+      "949": {
+        "id": 949,
+        "name": "The Ticket Fairy",
+        "oneLiner": "Revenue generation for live events",
+        "batchShort": "S15"
+      },
+      "952": {
+        "id": 952,
+        "name": "TetraScience",
+        "oneLiner": "The only R&D data cloud for life sciences",
+        "batchShort": "S15"
+      },
+      "960": {
+        "id": 960,
+        "name": "Bitmovin",
+        "oneLiner": "Powers OTT online video providers with video developer tools.",
+        "batchShort": "S15"
+      },
+      "962": {
+        "id": 962,
+        "name": "Cofactor Genomics",
+        "oneLiner": "Cofactor closes the precision medicine gap with predictive diagnostics",
+        "batchShort": "S15"
+      },
+      "963": {
+        "id": 963,
+        "name": "Instawork",
+        "oneLiner": "A flexible work app that connects businesses with hourly workers.",
+        "batchShort": "S15"
+      },
+      "964": {
+        "id": 964,
+        "name": "Eight Sleep",
+        "oneLiner": "The sleep fitness company.",
+        "batchShort": "S15"
+      },
+      "966": {
+        "id": 966,
+        "name": "Flirtey (SkyDrop)",
+        "oneLiner": "Flirtey is the world’s first commercial drone delivery service and…",
+        "batchShort": "S15"
+      },
+      "967": {
+        "id": 967,
+        "name": "Human Interest",
+        "oneLiner": "The 401(k) for small and medium-sized businesses.",
+        "batchShort": "S15"
+      },
+      "972": {
+        "id": 972,
+        "name": "Mux",
+        "oneLiner": "Video infrastructure for developers",
+        "batchShort": "W16"
+      },
+      "973": {
+        "id": 973,
+        "name": "Lattice",
+        "oneLiner": "Modern people management platform.",
+        "batchShort": "W16"
+      },
+      "974": {
+        "id": 974,
+        "name": "SOUNDBOKS",
+        "oneLiner": "We're creating the loudest battery-driven speaker on the market",
+        "batchShort": "W16"
+      },
+      "977": {
+        "id": 977,
+        "name": "Deepgram",
+        "oneLiner": "Building foundational AI for speech transcription and understanding.",
+        "batchShort": "W16"
+      },
+      "978": {
+        "id": 978,
+        "name": "Stealth Worker",
+        "oneLiner": "Information Security (Cyber Security), Compliance and Privacy (GDPR &…",
+        "batchShort": "W16"
+      },
+      "984": {
+        "id": 984,
+        "name": "Yardbook",
+        "oneLiner": "Marketplace & Software Revolutionizing Yard Care",
+        "batchShort": "W16"
+      },
+      "985": {
+        "id": 985,
+        "name": "Chatfuel",
+        "oneLiner": "Platform to easily create chatbots to engage with audiences on…",
+        "batchShort": "W16"
+      },
+      "987": {
+        "id": 987,
+        "name": "GetAccept",
+        "oneLiner": "Close deals faster. Digitally.",
+        "batchShort": "W16"
+      },
+      "988": {
+        "id": 988,
+        "name": "iSono Health",
+        "oneLiner": "AI-powered platform for Accessible and Personalized Breast Health…",
+        "batchShort": "W16"
+      },
+      "989": {
+        "id": 989,
+        "name": "Tovala",
+        "oneLiner": "A smart-oven-paired subscription meal service.",
+        "batchShort": "W16"
+      },
+      "990": {
+        "id": 990,
+        "name": "MagicBus",
+        "oneLiner": "We make vanpool simple.",
+        "batchShort": "W16"
+      },
+      "991": {
+        "id": 991,
+        "name": "Mason",
+        "oneLiner": "Mason is the fastest way to take smart devices from idea to end user",
+        "batchShort": "W16"
+      },
+      "994": {
+        "id": 994,
+        "name": "Outschool",
+        "oneLiner": "A live online learning platform that empowers kids ages 3–18.",
+        "batchShort": "W16"
+      },
+      "995": {
+        "id": 995,
+        "name": "Petcube",
+        "oneLiner": "Petcube is on the mission to improve lives of pets and pet owners…",
+        "batchShort": "W16"
+      },
+      "996": {
+        "id": 996,
+        "name": "Daily",
+        "oneLiner": "Conversational Voice and Multimodal AI built with Open Source",
+        "batchShort": "W16"
+      },
+      "997": {
+        "id": 997,
+        "name": "Mio",
+        "oneLiner": "Mio powers seamless communication between workplace chat apps.",
+        "batchShort": "W16"
+      },
+      "999": {
+        "id": 999,
+        "name": "Focal Systems",
+        "oneLiner": "Building the Operating System for B&M Retail using Deep Learning",
+        "batchShort": "W16"
+      },
+      "1009": {
+        "id": 1009,
+        "name": "Copia",
+        "oneLiner": "Copia's a for-profit technology company that solves food waste &…",
+        "batchShort": "W16"
+      },
+      "1010": {
+        "id": 1010,
+        "name": "Gigwell",
+        "oneLiner": "Building the Operating System for the Concert & Live Events Industry.",
+        "batchShort": "W16"
+      },
+      "1018": {
+        "id": 1018,
+        "name": "PocketSuite",
+        "oneLiner": "All-In-One Business Operating System by PocketSuite",
+        "batchShort": "W16"
+      },
+      "1020": {
+        "id": 1020,
+        "name": "Revl",
+        "oneLiner": "AI edited video souvenirs as a service",
+        "batchShort": "W16"
+      },
+      "1030": {
+        "id": 1030,
+        "name": "Opentrons",
+        "oneLiner": "We make robots for biologists.",
+        "batchShort": "W16"
+      },
+      "1032": {
+        "id": 1032,
+        "name": "Castle",
+        "oneLiner": "Block bots & bad behavior",
+        "batchShort": "W16"
+      },
+      "1034": {
+        "id": 1034,
+        "name": "Superside",
+        "oneLiner": "AI-First Creative Partner for Enterprise Teams",
+        "batchShort": "W16"
+      },
+      "1037": {
+        "id": 1037,
+        "name": "Function of Beauty",
+        "oneLiner": "Customizable beauty for hair, skin, and body care products.",
+        "batchShort": "W16"
+      },
+      "1038": {
+        "id": 1038,
+        "name": "Luciq (formerly Instabug)",
+        "oneLiner": "Agentic Observability Platform for Mobile",
+        "batchShort": "W16"
+      },
+      "1041": {
+        "id": 1041,
+        "name": "Pave",
+        "oneLiner": "Pave analyzes Google Analytics + marketing data and sends you reports…",
+        "batchShort": "W16"
+      },
+      "1042": {
+        "id": 1042,
+        "name": "Podium",
+        "oneLiner": "Get more leads. Make more money.",
+        "batchShort": "W16"
+      },
+      "1043": {
+        "id": 1043,
+        "name": "Salt Security",
+        "oneLiner": "Protects organizations from getting breached through their APIs.",
+        "batchShort": "W16"
+      },
+      "1044": {
+        "id": 1044,
+        "name": "Apollo.io",
+        "oneLiner": "Apollo is the foundation of your entire go-to-market strategy.",
+        "batchShort": "W16"
+      },
+      "1047": {
+        "id": 1047,
+        "name": "Thunkable",
+        "oneLiner": "Thunkable is the no-code platform to build powerful native mobile apps",
+        "batchShort": "W16"
+      },
+      "1049": {
+        "id": 1049,
+        "name": "Lynks",
+        "oneLiner": "Lynks is an e-commerce company that makes high demand products…",
+        "batchShort": "W16"
+      },
+      "1051": {
+        "id": 1051,
+        "name": "Gecko Robotics",
+        "oneLiner": "AI + Robotics for the Built World",
+        "batchShort": "W16"
+      },
+      "1052": {
+        "id": 1052,
+        "name": "GoLorry",
+        "oneLiner": "Mobile marketplace for inter-city trucking in India",
+        "batchShort": "W16"
+      },
+      "1053": {
+        "id": 1053,
+        "name": "HistoWiz",
+        "oneLiner": "Accelerating Histopathology for Cancer Research",
+        "batchShort": "W16"
+      },
+      "1055": {
+        "id": 1055,
+        "name": "mRelief",
+        "oneLiner": "mRelief has built an easy-to-use platform and web and text messaging…",
+        "batchShort": "W16"
+      },
+      "1056": {
+        "id": 1056,
+        "name": "NetBeez",
+        "oneLiner": "Network monitoring from the end-user perspective",
+        "batchShort": "W16"
+      },
+      "1063": {
+        "id": 1063,
+        "name": "Carbic",
+        "oneLiner": "using ultrasonics + ml to analyze fluid behavior at infrastructure…",
+        "batchShort": "W16"
+      },
+      "1065": {
+        "id": 1065,
+        "name": "FightCamp",
+        "oneLiner": "Home boxing gym with motion trackers that compute punches and reps.",
+        "batchShort": "W16"
+      },
+      "1068": {
+        "id": 1068,
+        "name": "Quilt Data",
+        "oneLiner": "Quilt manages data like code so that companies can experiment faster",
+        "batchShort": "W16"
+      },
+      "1071": {
+        "id": 1071,
+        "name": "Sanitation and Health Rights in India (SHRI)",
+        "oneLiner": "",
+        "batchShort": "W16"
+      },
+      "1076": {
+        "id": 1076,
+        "name": "Wakie",
+        "oneLiner": "A social app for phone calls. Express yourself and make real friends.",
+        "batchShort": "W16"
+      },
+      "1079": {
+        "id": 1079,
+        "name": "Sendbird",
+        "oneLiner": "The AI agent that doesn’t just support, it delights.",
+        "batchShort": "W16"
+      },
+      "1080": {
+        "id": 1080,
+        "name": "Relativity Space",
+        "oneLiner": "Building humanity’s multiplanetary future.",
+        "batchShort": "W16"
+      },
+      "1081": {
+        "id": 1081,
+        "name": "Boom",
+        "oneLiner": "Economically and environmentally sustainable supersonic travel",
+        "batchShort": "W16"
+      },
+      "1082": {
+        "id": 1082,
+        "name": "Protonet",
+        "oneLiner": "Protonet provides the easiest way for a small business to run its own…",
+        "batchShort": "W16"
+      },
+      "1093": {
+        "id": 1093,
+        "name": "Astranis",
+        "oneLiner": "Advanced satellites for high orbits.",
+        "batchShort": "W16"
+      },
+      "1096": {
+        "id": 1096,
+        "name": "Zenysis",
+        "oneLiner": "Building powerful data analysis software for developing countries.",
+        "batchShort": "W16"
+      },
+      "1097": {
+        "id": 1097,
+        "name": "Lygos",
+        "oneLiner": "Lygos (W16) built and commercialized sustainable, high-performance…",
+        "batchShort": "W16"
+      },
+      "1098": {
+        "id": 1098,
+        "name": "DevColor",
+        "oneLiner": "We give Black software engineers support they need to advance in tech.",
+        "batchShort": "W16"
+      },
+      "1101": {
+        "id": 1101,
+        "name": "Qvin",
+        "oneLiner": "Empowering women. Period.",
+        "batchShort": "W16"
+      },
+      "1103": {
+        "id": 1103,
+        "name": "Rappi",
+        "oneLiner": "On-demand delivery and financial services for Latin America.",
+        "batchShort": "W16"
+      },
+      "1184": {
+        "id": 1184,
+        "name": "Vetcove",
+        "oneLiner": "Powering the animal health supply chain.",
+        "batchShort": "S16"
+      },
+      "1202": {
+        "id": 1202,
+        "name": "Upgraded",
+        "oneLiner": "Upgraded helps retailers and carriers sell devices on subscription.",
+        "batchShort": "S16"
+      }
+    }
+  }
+}
