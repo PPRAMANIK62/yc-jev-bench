@@ -5,7 +5,7 @@
     {
       "formulation": "per_pair",
       "description": "one call per candidate; state holds the query and one company card",
-      "ndcg10": 0.7492419679454366,
+      "ndcg10": 0.7222873458647735,
       "p50Ms": 2726.466192,
       "costPer1kUsd": 2.352147,
       "requestsPerSearch": 100
@@ -13,7 +13,7 @@
     {
       "formulation": "fan_out",
       "description": "one call per search; state holds the query, 100 questions each carry a card",
-      "ndcg10": 0.7663081124841752,
+      "ndcg10": 0.7377628152348047,
       "p50Ms": 1203.4740920000004,
       "costPer1kUsd": 1.1777640000000005,
       "requestsPerSearch": 1

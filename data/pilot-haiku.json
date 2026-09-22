@@ -1,0 +1,22 @@
+{
+  "queries": 20,
+  "chosen": "batch_10",
+  "rows": [
+    {
+      "formulation": "batch_100",
+      "description": "one prompt per search scoring all 100 cards",
+      "ndcg10": 0.6430696943399822,
+      "p50Ms": 3291,
+      "costPer1kUsd": 17.112699999999997,
+      "requestsPerSearch": 1
+    },
+    {
+      "formulation": "batch_10",
+      "description": "10 prompts per search sent at once, 10 cards each",
+      "ndcg10": 0.6689144867636039,
+      "p50Ms": 1425,
+      "costPer1kUsd": 18.320800000000002,
+      "requestsPerSearch": 10
+    }
+  ]
+}
