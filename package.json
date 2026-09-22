@@ -9,6 +9,7 @@
     "typecheck": "tsc --noEmit",
     "bench:collect": "bun bench/collect.ts",
     "bench:index": "bun bench/index.ts",
+    "bench:embed-drift": "bun bench/embed-drift.ts",
     "bench:retrieve": "bun bench/retrieve.ts",
     "bench:rerank": "bun bench/rerank.ts",
     "bench:route": "bun bench/route.ts",
