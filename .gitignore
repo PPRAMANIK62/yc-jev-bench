@@ -43,3 +43,7 @@ next-env.d.ts
 .env*
 !.env.example
 /data/cache/
+
+# The fp32 weights the committed index was built with: 133 MB, past GitHub's 100 MiB file limit.
+# bench/index.ts and bench/embed-drift.ts fetch them; only the q8 file the app runs on is vendored.
+/models/Xenova/bge-small-en-v1.5/onnx/model.onnx
