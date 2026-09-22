@@ -49,7 +49,6 @@ export function SearchApp({ initial }: { initial: { q: string | null; intent: st
     if (initial.q) run(initial.q, isIntent(initial.intent) ? initial.intent : null);
     return () => inflight.current?.abort();
     // Only the URL at first load starts a search; later searches write the URL themselves.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const search = state.status === "idle" ? null : state.search;
@@ -57,7 +56,7 @@ export function SearchApp({ initial }: { initial: { q: string | null; intent: st
   return (
     <main className="mx-auto w-full max-w-[1100px] px-4 sm:px-8">
       <section className="pt-14 sm:pt-24">
-        <h1 className="narrow max-w-[16ch] text-[40px] leading-[1.02] font-semibold text-ink sm:text-[64px]">
+        <h1 className="narrow max-w-[20ch] text-[40px] leading-[1.02] font-semibold text-ink sm:text-[64px]">
           Search every YC company in plain English
         </h1>
         <form
@@ -87,7 +86,7 @@ export function SearchApp({ initial }: { initial: { q: string | null; intent: st
             />
             <button
               type="submit"
-              className="label flex h-10 shrink-0 items-center gap-2 rounded-[8px] bg-arm-jev px-3.5 text-[12px] text-white transition-transform duration-150 ease-out active:scale-[0.97] disabled:opacity-40"
+              className="label flex h-10 shrink-0 items-center gap-2 rounded-[8px] bg-arm-jev px-3.5 text-[12px] text-on-jev transition-transform duration-150 ease-out active:scale-[0.97] disabled:opacity-40"
               disabled={!text.trim()}
             >
               Search <span aria-hidden>⏎</span>
@@ -132,7 +131,8 @@ function IntentChips({ search, done, onPick }: { search: Search; done: boolean; 
   const route = search.route;
   const unsure = route !== null && !route.overridden && route.confidence < UNSURE;
   const routeFailed = Boolean(search.errors.route);
-  if (!unsure && !done) return null;
+  // Shown from the moment results land, so the row appears before the rerank glide rather than shoving it after.
+  if (!unsure && !done && !search.retrieved) return null;
   if (!route && !routeFailed) return null;
   return (
     <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2">
@@ -149,7 +149,7 @@ function IntentChips({ search, done, onPick }: { search: Search; done: boolean; 
               aria-pressed={on}
               onClick={() => onPick(i)}
               className={`rounded-full border px-3 py-1 text-[14px] transition-colors duration-[120ms] active:scale-[0.97] ${
-                on ? "border-arm-jev bg-arm-jev text-white" : "border-rule text-ink hover:border-ink"
+                on ? "border-arm-jev bg-arm-jev text-on-jev" : "border-rule text-ink hover:border-ink"
               }`}
             >
               {INTENT_LABEL[i]}

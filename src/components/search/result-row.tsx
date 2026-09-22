@@ -17,7 +17,7 @@ export function ResultRow({ row, index }: { row: Row; index: number }) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 10, transition: { duration: 0.16, ease: [0.23, 1, 0.32, 1] } }}
       transition={{ layout: GLIDE, default: { ...GLIDE, delay: reranked ? 0 : index * 0.03 } }}
-      className="group relative grid grid-cols-[2.25rem_minmax(0,1fr)] gap-x-3 border-b border-rule py-4 [grid-template-areas:'rank_main'_'._delta'] sm:grid-cols-[2.75rem_8rem_minmax(0,1fr)_auto] sm:gap-x-4 sm:[grid-template-areas:'rank_delta_main_meta']"
+      className="group relative grid grid-cols-[2.25rem_minmax(0,1fr)] gap-x-3 border-b border-rule py-4 gap-y-1 [grid-template-areas:'rank_delta'_'main_main'] sm:gap-y-0 sm:grid-cols-[2.75rem_8rem_minmax(0,1fr)_auto] sm:gap-x-4 sm:[grid-template-areas:'rank_delta_main_meta']"
     >
       <span
         className={`font-mono text-[15px] tnum pt-[3px] [grid-area:rank] ${reranked ? "text-ink" : "text-muted-ink"}`}
@@ -25,7 +25,7 @@ export function ResultRow({ row, index }: { row: Row; index: number }) {
       >
         {rank}
       </span>
-      <span className="font-mono text-[11.5px] tracking-[0.02em] pt-1.5 [grid-area:delta] sm:pt-[5px]">
+      <span className="font-mono text-[11.5px] tracking-[0.02em] pt-[3px] [grid-area:delta] sm:pt-[5px]">
         {reranked ? (
           <motion.span
             key="delta"

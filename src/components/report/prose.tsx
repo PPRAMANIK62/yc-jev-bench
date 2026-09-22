@@ -1,0 +1,263 @@
+import { ARMS, INTENTS, type Results, type Verdict } from "@/lib/domain";
+import { int, metric, ms, pct, times, usd } from "@/lib/format";
+import { armLabel, armOf, Swatch } from "./arms";
+
+export function SyntheticBanner() {
+  return (
+    <div className="sticky top-0 z-20 bg-ink text-paper">
+      <p className="label mx-auto max-w-[1100px] px-4 py-2 text-[12px] sm:px-8">
+        Synthetic data for layout only. These are not results.
+      </p>
+    </div>
+  );
+}
+
+function snapshotDate(snapshot: string): string | null {
+  return /(\d{4}-\d{2}-\d{2})/.exec(snapshot)?.[1] ?? null;
+}
+
+interface Headline {
+  key: string;
+  jevOwnsKey: boolean;
+  before: string;
+  after: string;
+}
+
+function headline(results: Results): Headline {
+  const jev = armOf(results, "jev");
+  const haiku = armOf(results, "haiku");
+  if (jev && haiku) {
+    const share = jev.overall.ndcg10.mean / haiku.overall.ndcg10.mean;
+    const speed = haiku.speed.p50Ms / jev.speed.p50Ms;
+    const jc = jev.speed.costPer1kUsd;
+    const hc = haiku.speed.costPer1kUsd;
+    const clauses: string[] = [];
+    if (Number.isFinite(speed) && speed > 0) clauses.push(speed >= 1 ? `${times(speed)} the speed` : `${times(1 / speed)} the latency`);
+    if (jc !== null && hc !== null && jc > 0) clauses.push(hc >= jc ? `${times(hc / jc)} lower cost` : `${times(jc / hc)} the cost`);
+    return {
+      key: pct(share),
+      jevOwnsKey: true,
+      before: "Jev reached",
+      after: `of Claude Haiku’s ranking quality${clauses.length ? ` at ${clauses.join(" and ")}` : ""}.`,
+    };
+  }
+  if (jev) {
+    return { key: metric(jev.overall.ndcg10.mean), jevOwnsKey: true, before: "Jev scored an nDCG@10 of", after: "The Claude Haiku run it is measured against is still pending." };
+  }
+  const best = [...results.arms].sort((a, b) => b.overall.ndcg10.mean - a.overall.ndcg10.mean)[0];
+  if (best) {
+    return {
+      key: metric(best.overall.ndcg10.mean),
+      jevOwnsKey: false,
+      before: `The Jev run is pending. So far ${armLabel(best.arm)} leads with an nDCG@10 of`,
+      after: "",
+    };
+  }
+  return { key: "—", jevOwnsKey: false, before: "No reranker has been run yet.", after: "" };
+}
+
+export function Hero({ results }: { results: Results }) {
+  const h = headline(results);
+  const queries = INTENTS.reduce((s, i) => s + results.queryCounts[i], 0);
+  const date = snapshotDate(results.snapshot);
+  return (
+    <header className="pt-14 pb-16 sm:pt-20 sm:pb-24">
+      <p className="label text-muted-ink">Can Jev replace an LLM reranker?</p>
+      <p
+        className={`mt-6 font-mono leading-[0.9] font-medium tracking-[-0.04em] ${h.jevOwnsKey ? "text-arm-jev" : "text-ink"}`}
+        style={{ fontSize: "clamp(88px, 19vw, 208px)" }}
+        aria-hidden
+      >
+        {h.key}
+      </p>
+      <h1 className="narrow mt-6 max-w-[24ch] text-[30px] leading-[1.1] font-semibold text-ink sm:text-[44px]">
+        {h.before} <span className="font-mono text-[0.86em] tracking-[-0.02em]">{h.key}</span> {h.after}
+      </h1>
+      <p className="label mt-8 flex flex-wrap gap-x-3 gap-y-1 text-muted-ink">
+        <span>{int(queries)} test queries</span>
+        <span className="text-rule">·</span>
+        <span>{int(results.gradedPairs)} graded pairs</span>
+        {date ? (
+          <>
+            <span className="text-rule">·</span>
+            <span>YC snapshot {date}</span>
+          </>
+        ) : null}
+        <span className="text-rule">·</span>
+        <span>judge: Claude Opus</span>
+      </p>
+    </header>
+  );
+}
+
+const STEPS = [
+  { name: "query", note: "a sentence someone wrote on Hacker News" },
+  { name: "route", note: "pick an intent: competitors, products, jobs or open source" },
+  { name: "filter", note: "hard filters from that intent, e.g. hiring only" },
+  { name: "retrieve 100", note: "BM25 + embeddings, frozen once for every reranker" },
+  { name: "rerank", note: "the only step that changes", arms: true },
+  { name: "top 10", note: "what gets graded" },
+];
+
+export function SetupDiagram() {
+  return (
+    <figure>
+      <ol className="grid gap-px overflow-hidden rounded-[10px] border border-rule bg-rule sm:grid-cols-3 lg:grid-cols-[1fr_1fr_1fr_1fr_1.45fr_1fr]">
+        {STEPS.map((s, i) => (
+          <li key={s.name} className={`relative flex flex-col gap-2 p-4 ${s.arms ? "bg-surface" : "bg-paper"}`}>
+            <span className="label text-muted-ink">{i + 1}</span>
+            <span className={`narrow text-[19px] font-semibold ${s.arms ? "text-arm-jev" : "text-ink"}`}>{s.name}</span>
+            <span className="text-[13.5px] leading-snug text-muted-ink">{s.note}</span>
+            {s.arms ? (
+              <span className="mt-1 flex flex-col gap-1">
+                {ARMS.map((a) => (
+                  <span key={a} className="inline-flex items-center gap-2 text-[13.5px] whitespace-nowrap text-ink">
+                    <Swatch arm={a} />
+                    {armLabel(a)}
+                  </span>
+                ))}
+              </span>
+            ) : null}
+          </li>
+        ))}
+      </ol>
+      <figcaption className="sr-only">
+        The pipeline: query, route, filter, retrieve 100 candidates, rerank, top 10. Only the rerank step differs between
+        the four rerankers.
+      </figcaption>
+    </figure>
+  );
+}
+
+export function JevPilot({ results }: { results: Results }) {
+  const pilot = results.jevPilot;
+  if (!pilot) return null;
+  return (
+    <div className="mt-10">
+      <p className="prose-paper text-ink">
+        Jev can be asked two ways. Before the test set was touched, a pilot on {pilot.queries} held-out dev queries picked
+        one; every Jev number below uses it.
+      </p>
+      <div className="relative -mx-4 mt-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+        <table className="w-full min-w-[620px] border-collapse text-left">
+          <caption className="sr-only">Jev formulation pilot</caption>
+          <thead>
+            <tr className="label border-b border-rule text-muted-ink">
+              <th scope="col" className="py-2 pr-4 font-normal">Formulation</th>
+              <th scope="col" className="py-2 pr-4 text-right font-normal">nDCG@10</th>
+              <th scope="col" className="py-2 pr-4 text-right font-normal">p50</th>
+              <th scope="col" className="py-2 pr-4 text-right font-normal">Per 1,000</th>
+              <th scope="col" className="py-2 text-right font-normal">Requests per search</th>
+            </tr>
+          </thead>
+          <tbody className="font-mono text-[13px] tnum">
+            {pilot.rows.map((r) => (
+              <tr key={r.formulation} className="border-b border-rule">
+                <th scope="row" className="py-3 pr-4 font-sans text-[15px] font-normal text-ink">
+                  <span className="font-medium">{r.description}</span>
+                  {r.formulation === pilot.chosen ? <span className="label ml-2 rounded-full bg-arm-jev px-2 py-px text-on-jev">chosen</span> : null}
+                </th>
+                <td className="py-3 pr-4 text-right">{metric(r.ndcg10)}</td>
+                <td className="py-3 pr-4 text-right">{ms(r.p50Ms)}</td>
+                <td className="py-3 pr-4 text-right">{usd(r.costPer1kUsd)}</td>
+                <td className="py-3 text-right">{int(r.requestsPerSearch)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+const VERDICT: Record<Verdict, { label: string; className: string }> = {
+  supported: { label: "Supported", className: "bg-ink text-paper border-ink" },
+  rejected: { label: "Rejected", className: "border-ink text-ink" },
+  pending: { label: "Pending", className: "border-rule text-muted-ink border-dashed" },
+};
+
+export function Hypotheses({ results }: { results: Results }) {
+  return (
+    <ol className="border-t border-rule">
+      {results.hypotheses.map((h) => {
+        const v = VERDICT[h.verdict];
+        return (
+          <li key={h.id} className="grid gap-x-6 gap-y-2 border-b border-rule py-5 sm:grid-cols-[3rem_minmax(0,1fr)_7.5rem]">
+            <span className="label pt-1 text-muted-ink">{h.id}</span>
+            <div>
+              <p className="font-serif text-[18px] leading-snug text-ink">{h.statement}</p>
+              <p className="label mt-2 text-muted-ink">{h.evidence}</p>
+            </div>
+            <span className={`label h-fit w-fit rounded-full border px-2.5 py-1 sm:justify-self-end ${v.className}`}>{v.label}</span>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
+export function Trust({ results }: { results: Results }) {
+  const ja = results.judgeAgreement;
+  const haiku = armOf(results, "haiku");
+  return (
+    <div className="prose-paper text-ink">
+      <p>
+        Every quality number above comes from one grader: Claude Opus, reading each query with 20 pooled companies at a
+        time and grading them 0 (irrelevant), 1 (partial) or 2 (exact). It never saw which reranker found a company.
+      </p>
+      {ja ? (
+        <p>
+          To check it, a person graded {int(ja.n)} of the same pairs by hand. The judge gave the same grade{" "}
+          <strong className="font-mono text-[0.85em] font-normal">{pct(ja.exact)}</strong> of the time and was within one
+          grade <strong className="font-mono text-[0.85em] font-normal">{pct(ja.within1)}</strong> of the time (Cohen&apos;s
+          κ <strong className="font-mono text-[0.85em] font-normal">{ja.kappa.toFixed(2)}</strong>).
+        </p>
+      ) : (
+        <p className="text-muted-ink">The hand-graded check of the judge has not been run yet.</p>
+      )}
+      <p>
+        <strong className="font-semibold">A Claude judge may favour a Claude reranker.</strong>{" "}
+        {haiku
+          ? "Read Claude Haiku's lead against the judge-free check in section 6: that chart uses no grader at all, so if Haiku's lead shrinks there, the judge is the likely reason."
+          : "The judge-free check in section 6 is there to catch this."}
+      </p>
+      <p className="font-sans text-[15px] font-semibold">Limitations</p>
+      <ul className="list-disc space-y-1.5 pl-5 marker:text-rule">
+        <li>
+          Queries come from Hacker News. They skew technical and toward developer tools, so the product and open-source
+          intents are easier to fill than they would be on a general site.
+        </li>
+        <li>
+          Founder search is not tested. The YC directory mirror has no founder data, and Jev has no founder intent here.
+        </li>
+        <li>Retrieval is held fixed. A reranker cannot recover a company retrieval missed, so every arm shares that ceiling.</li>
+        <li>
+          Latency to a hosted API is mostly network. Claude Haiku ran through Claude Code, so its latency is API time
+          reported by Claude Code, close to but not the same as calling the API directly.
+        </li>
+        <li>Costs use each provider&apos;s published list price on the run date.</li>
+      </ul>
+    </div>
+  );
+}
+
+const COMMANDS = `git clone https://github.com/<you>/yc-jev-bench && cd yc-jev-bench
+bun install
+cp .env.example .env        # add TYPESAFE_API_KEY for the Jev arm
+bun bench/index.ts          # build the retrieval index from the frozen snapshot
+bun run bench               # run every arm, grade, and write src/generated/results.json
+bun run dev                 # open this report and the search at localhost:3000`;
+
+export function Reproduce() {
+  return (
+    <div>
+      <p className="prose-paper text-ink">
+        The data snapshot, queries, labels and prompts are in the repository. Retrieval is frozen once, so every arm
+        reranks the identical 100 candidates.
+      </p>
+      <pre className="mt-6 overflow-x-auto rounded-[10px] border border-rule bg-surface p-5 font-mono text-[12.5px] leading-[1.9] text-ink">
+        <code>{COMMANDS}</code>
+      </pre>
+    </div>
+  );
+}

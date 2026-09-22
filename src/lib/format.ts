@@ -13,8 +13,8 @@ export function pct(fraction: number, digits = 0): string {
 }
 
 export function ms(n: number): string {
-  if (n >= 10_000) return `${(n / 1000).toFixed(1)} s`;
-  if (n >= 100) return `${grouped.format(Math.round(n))} ms`;
+  if (n >= 1000) return `${(n / 1000).toFixed(1)} s`;
+  if (n >= 100) return `${Math.round(n)} ms`;
   if (n >= 10) return `${n.toFixed(0)} ms`;
   return `${n.toFixed(1)} ms`;
 }
