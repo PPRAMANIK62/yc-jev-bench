@@ -100,7 +100,13 @@ export function Hero({ results }: { results: Results }) {
           could find it. The graded comparison with Claude Haiku is pending until 20 or more queries are graded.
         </p>
       ) : null}
-      {h1Decided(results) && Number.isFinite(graded) && graded < queries ? (
+      {h1Decided(results) && results.judgeAgreement === null ? (
+        <p className="mt-5 max-w-[60ch] font-serif text-[17px] leading-snug text-muted-ink">
+          Every grade so far comes from Claude Opus. The human check of that grader has not been done yet, so treat the
+          quality numbers as provisional.
+        </p>
+      ) : null}
+      {h1Decided(results) && Number.isFinite(graded) && graded < 0.9 * queries ? (
         <p className="mt-5 max-w-[60ch] font-serif text-[17px] leading-snug text-muted-ink">
           Early number: it rests on {int(graded)} of {int(queries)} queries graded so far, and will move as grading finishes.
         </p>
