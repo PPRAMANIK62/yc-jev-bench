@@ -29,10 +29,9 @@ import {
 import { JEV_CHOSEN, JEV_PILOT_FILE } from "../src/lib/jev";
 import { bootstrap, calibrationBins, cohenKappa, confusionMatrix, mean, percentile } from "../src/lib/metrics";
 import { loadCandidates, loadQueries, readJsonl } from "./lib";
-import { OPUS_GRADES, gradeMap, queryQuality, rankedIds } from "./pool";
+import { HUMAN_GRADES, OPUS_GRADES, gradeMap, queryQuality, rankedIds } from "./pool";
 
 const OUT = "src/generated/results.json";
-const HUMAN_GRADES = "data/grades.human.jsonl";
 // Below this many graded queries a quality hypothesis stays pending rather than being called on noise.
 const MIN_QUERIES = 20;
 

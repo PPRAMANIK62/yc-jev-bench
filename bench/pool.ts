@@ -2,7 +2,7 @@ import { readdirSync } from "node:fs";
 import type { CompanyId, Grade, GradeRecord, QueryId, RerankRun } from "../src/lib/domain";
 import { ndcgAt, recallAt, reciprocalRank } from "../src/lib/metrics";
 import { orderByScores } from "../src/lib/rerankers";
-import { loadCandidates, readJsonl } from "./lib";
+import { SEED, hashSeed, interleaveByIntent, loadCandidates, loadQueries, readJsonl, seededShuffle } from "./lib";
 
 export const POOL_DEPTH = 20;
 
@@ -51,4 +51,29 @@ export function queryQuality(ranked: CompanyId[], grades: Map<CompanyId, Grade> 
   const all = [...grades.values()];
   const rg = ranked.map((id) => grades.get(id) ?? null);
   return { ndcg10: ndcgAt(rg, all), recall10: recallAt(rg, all), mrr: reciprocalRank(rg) };
+}
+
+export const HUMAN_GRADES = "data/grades.human.jsonl";
+export const HUMAN_QUERY_COUNT = 10;
+export const HUMAN_PER_QUERY = 20;
+
+// Fixed sample for the human check: seeded shuffle of the test split, round-robin over intents.
+export function humanQueryIds(): QueryId[] {
+  return interleaveByIntent(seededShuffle(loadQueries("test"), SEED))
+    .slice(0, HUMAN_QUERY_COUNT)
+    .map((q) => q.id);
+}
+
+// The HUMAN_PER_QUERY companies with the best rank in any present run, blind-shuffled.
+export function humanPairs(queryId: QueryId): CompanyId[] {
+  const candidates = loadCandidates().get(queryId);
+  if (!candidates) return [];
+  const best = new Map<CompanyId, number>();
+  for (const file of rerankFiles()) {
+    const run = readJsonl<RerankRun>(file).find((r) => r.queryId === queryId);
+    if (!run) continue;
+    rankedIds(run, candidates.candidateIds).forEach((id, i) => best.set(id, Math.min(i, best.get(id) ?? Infinity)));
+  }
+  const top = [...best.entries()].sort((a, b) => a[1] - b[1] || a[0] - b[0]).slice(0, HUMAN_PER_QUERY).map(([id]) => id);
+  return seededShuffle(top.sort((a, b) => a - b), hashSeed(queryId));
 }

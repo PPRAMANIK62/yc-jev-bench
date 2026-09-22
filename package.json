@@ -5,7 +5,18 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "bench:collect": "bun bench/collect.ts",
+    "bench:index": "bun bench/index.ts",
+    "bench:retrieve": "bun bench/retrieve.ts",
+    "bench:rerank": "bun bench/rerank.ts",
+    "bench:route": "bun bench/route.ts",
+    "bench:judge": "bun bench/judge.ts",
+    "bench:pilot": "bun bench/pilot.ts",
+    "bench:score": "bun bench/score.ts",
+    "bench:human": "bun bench/grade-human.ts",
+    "bench:fixture": "bun bench/fixture.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
