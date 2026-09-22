@@ -26,7 +26,7 @@ interface Headline {
 function headline(results: Results): Headline {
   const jev = armOf(results, "jev");
   const haiku = armOf(results, "haiku");
-  if (jev && haiku) {
+  if (jev && haiku && h1Decided(results)) {
     const share = jev.overall.ndcg10.mean / haiku.overall.ndcg10.mean;
     const speed = haiku.speed.p50Ms / jev.speed.p50Ms;
     const jc = jev.speed.costPer1kUsd;
@@ -39,6 +39,19 @@ function headline(results: Results): Headline {
       jevOwnsKey: true,
       before: "Jev reached",
       after: `of Claude Haiku’s ranking quality${clauses.length ? ` at ${clauses.join(" and ")}` : ""}.`,
+    };
+  }
+  // Until enough queries are graded, lead with the judge-free check: it needs no grader and covers every Launch HN query.
+  const none = armOf(results, "none");
+  const firsts = (ranks: (number | null)[]) => ranks.filter((r) => r === 1).length;
+  if (jev && jev.knownItemRanks.length) {
+    const n = jev.knownItemRanks.length;
+    const baseline = none?.knownItemRanks.length === n ? ` Without reranking: ${firsts(none.knownItemRanks)}.` : "";
+    return {
+      key: `${firsts(jev.knownItemRanks)}/${n}`,
+      jevOwnsKey: true,
+      before: "Given only the words of a Launch HN post, Jev ranked the company that wrote it first in",
+      after: `posts.${baseline}`,
     };
   }
   if (jev) {
@@ -56,6 +69,13 @@ function headline(results: Results): Headline {
   return { key: "—", jevOwnsKey: false, before: "No reranker has been run yet.", after: "" };
 }
 
+const h1Decided = (results: Results) => results.hypotheses.some((h) => h.id === "H1" && h.verdict !== "pending");
+
+const missed = (results: Results) => {
+  const ranks = armOf(results, "jev")?.knownItemRanks;
+  return ranks?.length ? ranks.filter((r) => r === null).length : null;
+};
+
 export function Hero({ results }: { results: Results }) {
   const h = headline(results);
   const queries = INTENTS.reduce((s, i) => s + results.queryCounts[i], 0);
@@ -71,10 +91,16 @@ export function Hero({ results }: { results: Results }) {
       >
         {h.key}
       </p>
-      <h1 className="narrow mt-6 max-w-[24ch] text-[30px] leading-[1.1] font-semibold text-ink sm:text-[44px]">
-        {h.before} <span className="font-mono text-[0.86em] tracking-[-0.02em]">{h.key}</span> {h.after}
+      <h1 className="narrow mt-6 max-w-[24ch] sm:mt-12 text-[30px] leading-[1.1] font-semibold text-ink sm:text-[44px]">
+        {h.before} <span className="font-mono text-[0.86em] tracking-[-0.02em]">{h.key.replace("/", " of ")}</span> {h.after}
       </h1>
-      {Number.isFinite(graded) && graded < queries ? (
+      {!h1Decided(results) && missed(results) !== null ? (
+        <p className="mt-5 max-w-[60ch] font-serif text-[17px] leading-snug text-muted-ink">
+          In {int(missed(results)!)} of those posts retrieval never put the company in the 100 candidates, so no reranker
+          could find it. The graded comparison with Claude Haiku is pending until 20 or more queries are graded.
+        </p>
+      ) : null}
+      {h1Decided(results) && Number.isFinite(graded) && graded < queries ? (
         <p className="mt-5 max-w-[60ch] font-serif text-[17px] leading-snug text-muted-ink">
           Early number: it rests on {int(graded)} of {int(queries)} queries graded so far, and will move as grading finishes.
         </p>
@@ -247,11 +273,11 @@ export function Trust({ results }: { results: Results }) {
   );
 }
 
-const COMMANDS = `git clone https://github.com/<you>/yc-jev-bench && cd yc-jev-bench
+const COMMANDS = `git clone <this repo> && cd yc-jev-bench
 bun install
 cp .env.example .env        # add TYPESAFE_API_KEY for the Jev arm
 bun bench/index.ts          # build the retrieval index from the frozen snapshot
-bun run bench               # run every arm, grade, and write src/generated/results.json
+bun run bench               # every arm and router, the Opus judge, then src/generated/results.json
 bun run dev                 # open this report and the search at localhost:3000`;
 
 export function Reproduce() {

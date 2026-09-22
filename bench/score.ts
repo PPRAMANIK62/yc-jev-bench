@@ -96,15 +96,16 @@ for (const arm of armRuns.keys()) {
     const m = quality(arm, common.filter((q) => q.intent === intent));
     if (m) byIntent[intent] = m;
   }
+  const own = [...armRuns.get(arm)!.keys()].map((id) => byId.get(id)!).filter((q) => q.knownAnswer !== null);
+  const ranks = own.map((q) => knownRank(arm, q));
   arms.push({
     arm,
     overall: overall ?? { ndcg10: bootstrap([]), recall10: bootstrap([]), mrr: bootstrap([]), n: 0 },
     byIntent,
     speed: speed([...armRuns.get(arm)!.values()]),
-    knownItemRanks: common.filter((q) => q.knownAnswer !== null).map((q) => knownRank(arm, q)),
+    // Judge-free, so it needs no common graded set: each arm on every Launch HN test query it ran.
+    knownItemRanks: ranks,
   });
-  const own = [...armRuns.get(arm)!.keys()].map((id) => byId.get(id)!).filter((q) => q.knownAnswer !== null);
-  const ranks = own.map((q) => knownRank(arm, q));
   const found = ranks.filter((r): r is number => r !== null);
   console.log(
     `${arm.padEnd(6)} ${armRuns.get(arm)!.size} test queries run; known item (all ${own.length} Launch HN): ` +

@@ -1,36 +1,38 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# yc-jev-bench
 
-## Getting Started
+Can Jev replace an LLM reranker? An independent benchmark of TypeSafe's Jev on natural-language search over all 6,245 YC companies, plus a live search demo that runs on it.
 
-First, run the development server:
+- `/` is the live search. Your query is routed by Jev, retrieved with BM25 + embeddings, then reranked by Jev.
+- `/report` is the benchmark write-up, rendered from `src/generated/results.json`.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+The spec is `EXPERIMENT.md`. Design rules are in `docs/design.md`. Jev API notes are in `docs/jev-notes.md`.
+
+## Setup
+
+```sh
+bun install
+cp .env.example .env.local   # set TYPESAFE_API_KEY
+bun run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The only key the app needs is `TYPESAFE_API_KEY`. The Haiku arm and the Opus judge run through your local `claude` CLI (Claude Code on a subscription). They are used by the benchmark only and never by the app.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Running the benchmark
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Every script is resumable. It appends to its output, skips work already done, and is a no-op when complete.
 
-## Learn More
+| Step | Command | Writes |
+|---|---|---|
+| Collect queries from Hacker News | `bun run bench:collect` | `data/queries.jsonl` |
+| Build the embedding index | `bun run bench:index` | `data/index/` |
+| Freeze 100 candidates per query | `bun run bench:retrieve` | `runs/candidates.jsonl` |
+| Pick the Jev formulation on the dev split | `bun run bench:pilot` | `data/jev-pilot.json` |
+| Rerank | `bun run bench:rerank --arm none\|bge\|haiku\|jev [--limit N]` | `runs/rerank-<arm>.jsonl` |
+| Route | `bun run bench:route --router haiku\|jev [--limit N]` | `runs/route-<router>.jsonl` |
+| Grade pooled results with Opus | `bun run bench:judge --split test` | `data/grades.opus.jsonl` |
+| Hand-grade the agreement sample | `bun run bench:human` | `data/grades.human.jsonl` |
+| Compute every number | `bun run bench:score` | `src/generated/results.json` |
 
-To learn more about Next.js, take a look at the following resources:
+`bun run bench` runs everything from retrieval to scoring in order. `/report` is prerendered, so rebuild after rescoring.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The Haiku and Opus steps use the Claude subscription behind your `claude` CLI. For the full test split that's about 200 Haiku calls and a few hundred Opus calls.
