@@ -17,6 +17,26 @@ bun run dev
 
 The only key the app needs is `TYPESAFE_API_KEY`. The Haiku arm and the Opus judge run through your local `claude` CLI (Claude Code on a subscription). They are used by the benchmark only and never by the app.
 
+## Deploying
+
+Vercel, as a Node serverless function. Three things the search route reads at runtime are invisible to Next's import graph, so `next.config.ts` pins them with `outputFileTracingIncludes` on `/api/search`.
+
+| Must ship | Size | Why tracing misses it |
+|---|---|---|
+| `data/companies-*.json`, `data/index/**` | 20.1 MB | The tracer does resolve these from the constant paths in `src/lib`, but that is static analysis noticing a string literal, not a guarantee. |
+| `models/Xenova/bge-small-en-v1.5/**` | 34.7 MB | Nothing imports the weights. They are opened by name at runtime. |
+| `node_modules/onnxruntime-node/bin/napi-v6/linux/**` | 71.7 MB | `@huggingface/transformers` reaches the native ONNX backend through a runtime `require` the tracer cannot follow. Leave it out and the route module throws `Cannot find module 'onnxruntime-node'`, which is a 500 on every search. |
+
+The rest of the function is about 49 MB, for a traced total of 175.9 MB against Vercel's 250 MB uncompressed limit. After a build the file list is `.next/server/app/api/search/route.js.nft.json`, with paths relative to that file. Sum them to check the margin. The transformers download cache is excluded, because a machine that has run the benchmark has 690 MB sitting in `node_modules/@huggingface/transformers/.cache`, including a 570 MB reranker the app never loads.
+
+A function's filesystem is read-only, so the weights ship in the repo and `src/lib/embed.ts` sets `env.allowRemoteModels = false`. Left on its default, a missing file turns into a 133 MB download that fails with `EACCES` partway through someone's search.
+
+The app embeds queries with the q8 weights while `data/index` holds fp32 document vectors. The fp32 file is 133 MB, past GitHub's 100 MiB limit for one file and too large for the function, so it is gitignored and fetched on demand by the two bench steps that need it. `bun run bench:embed-drift` prints what that mismatch costs.
+
+`maxDuration` on the route is 30 seconds. A cold search measures 3.0 s on a production build here, 1.1 s warm.
+
+If the model cannot load, search still answers. `retrieve()` drops the dense half, returns the BM25 ranking and reports `mode: "keyword_only"`, which the page prints under the results. It is a real loss rather than a free fallback: grade-2 companies reaching the top 100 falls from 910/910 to 709/910, and the Launch HN company is found in 33 of 50 queries instead of 37.
+
 ## Running the benchmark
 
 Every script is resumable. It appends to its output, skips work already done, and is a no-op when complete.
@@ -25,6 +45,7 @@ Every script is resumable. It appends to its output, skips work already done, an
 |---|---|---|
 | Collect queries from Hacker News | `bun run bench:collect` | `data/queries.jsonl` |
 | Build the embedding index | `bun run bench:index` | `data/index/` |
+| Measure what the app's q8 query weights cost against the fp32 index | `bun run bench:embed-drift` | stdout |
 | Freeze 100 candidates per query | `bun run bench:retrieve` | `runs/candidates.jsonl` |
 | Pick the Jev and Haiku formulations on the dev split | `bun run bench:pilot` | `data/pilot-<arm>.json` |
 | Rerank | `bun run bench:rerank --arm none\|bge\|haiku\|jev [--formulation F] [--split dev\|test] [--limit N]` | `runs/rerank-<arm>[-<formulation>].jsonl` |

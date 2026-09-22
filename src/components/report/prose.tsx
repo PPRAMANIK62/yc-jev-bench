@@ -283,6 +283,25 @@ export function Trust({ results }: { results: Results }) {
           Haiku prompts at once, its latency is the slowest prompt&apos;s.
         </li>
         <PositionDecayLimitation results={results} />
+        <li>
+          The live search does not retrieve quite the way the benchmark did. Every number here used fp32 query
+          embeddings; the deployed app uses the q8 weights, because the fp32 file is 133 MB and a serverless function
+          has 250 MB for everything it needs. Across the 200 test queries the two agree on a median{" "}
+          <span className="font-mono text-[0.85em]">96%</span> of the retrieved 100 and{" "}
+          <span className="font-mono text-[0.85em]">90%</span> of the top 10, and they disagree on the first result for{" "}
+          <span className="font-mono text-[0.85em]">8.5%</span> of queries. In this page&apos;s own currency, q8 drops{" "}
+          <span className="font-mono text-[0.85em]">13</span> of the{" "}
+          <span className="font-mono text-[0.85em]">910</span> grade-2 companies out of the top 100 and costs nothing on
+          the Launch HN check. Rerun it with <span className="font-mono text-[0.85em]">bun run bench:embed-drift</span>.
+        </li>
+        <li>
+          If the embedding model fails to load, the live search ranks with BM25 alone and says so under the results.
+          Nothing on this page is measured that way, and it is not a free fallback: grade-2 companies reaching the top
+          100 falls from <span className="font-mono text-[0.85em]">910/910</span> to{" "}
+          <span className="font-mono text-[0.85em]">709/910</span>, and the Launch HN company is found in{" "}
+          <span className="font-mono text-[0.85em]">33</span> of 50 queries instead of{" "}
+          <span className="font-mono text-[0.85em]">37</span>.
+        </li>
         <li>Costs use each provider&apos;s published list price on the run date.</li>
       </ul>
     </div>
