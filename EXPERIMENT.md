@@ -19,8 +19,8 @@ Both are where Jev's speed and cost claims would matter, and both have obvious b
 
 Written before running anything, so the post can say which ones survived.
 
-- **H1:** Jev Score reaches at least 90% of Claude Haiku's nDCG@10 as a reranker.
-- **H2:** Jev Score's p50 latency for 100 candidates is under 10% of Haiku's.
+- **H1:** Jev reaches at least 90% of Claude Haiku's nDCG@10 as a reranker.
+- **H2:** Jev's p50 latency for 100 candidates is under 10% of Haiku's.
 - **H3:** Jev Choice matches Haiku within 3 points of accuracy on intent routing.
 - **H4:** Jev beats the open-source cross-encoder on accuracy. This one is the least certain. A tuned cross-encoder is a strong, free baseline.
 
