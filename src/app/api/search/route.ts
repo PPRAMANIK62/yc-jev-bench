@@ -31,55 +31,6 @@ function rankByScore(companies: Company[], scores: number[]): SearchHit[] {
     .map((h, i) => ({ ...h, rank: i + 1 }));
 }
 
-// TEMPORARY. Reports what the deployed function can actually see, to diagnose a 500 that only
-// happens on Vercel. Delete once the deploy is proven. Reports no secret: the Jev key appears as a
-// boolean and never as a value.
-export async function GET(request: Request) {
-  if (new URL(request.url).searchParams.get("diag") !== "1") return new Response("Use POST to search.", { status: 405 });
-  const { createRequire } = await import("node:module");
-  const { existsSync, statSync, readdirSync } = await import("node:fs");
-  const { join } = await import("node:path");
-  const require = createRequire(import.meta.url);
-
-  const attempt = async (fn: () => unknown | Promise<unknown>) => {
-    try {
-      return { ok: true, value: String((await fn()) ?? "ok").slice(0, 120) };
-    } catch (err) {
-      const e = err as { code?: string; message?: string };
-      return { ok: false, code: e.code ?? null, message: (e.message ?? String(err)).split("\n")[0].slice(0, 300) };
-    }
-  };
-
-  const cwd = process.cwd();
-  const sizeOf = (p: string) => (existsSync(join(cwd, p)) ? statSync(join(cwd, p)).size : "MISSING");
-  const listing = (p: string) => (existsSync(join(cwd, p)) ? readdirSync(join(cwd, p)) : "MISSING");
-
-  return Response.json(
-    {
-      node: process.version,
-      platform: `${process.platform}/${process.arch}`,
-      cwd,
-      cwdEntries: readdirSync(cwd).slice(0, 40),
-      files: {
-        "data/companies-2026-09-22.json": sizeOf("data/companies-2026-09-22.json"),
-        "data/index/embeddings.f32": sizeOf("data/index/embeddings.f32"),
-        "data/index/ids.json": sizeOf("data/index/ids.json"),
-        "models/Xenova/bge-small-en-v1.5/config.json": sizeOf("models/Xenova/bge-small-en-v1.5/config.json"),
-        "models/Xenova/bge-small-en-v1.5/tokenizer.json": sizeOf("models/Xenova/bge-small-en-v1.5/tokenizer.json"),
-        "models/Xenova/bge-small-en-v1.5/onnx/model_quantized.onnx": sizeOf("models/Xenova/bge-small-en-v1.5/onnx/model_quantized.onnx"),
-      },
-      onnxruntimeNode: listing("node_modules/onnxruntime-node"),
-      onnxruntimeNodeBin: listing("node_modules/onnxruntime-node/bin/napi-v6"),
-      requireOnnxruntimeNode: await attempt(() => Object.keys(require("onnxruntime-node")).length + " exports"),
-      importTransformers: await attempt(async () => typeof (await import("@huggingface/transformers")).pipeline),
-      embedQuery: await attempt(async () => (await (await import("@/lib/embed")).embedQuery("a tool to catch flaky tests in CI")).length + " dims"),
-      retrieve: await attempt(async () => (await (await import("@/lib/retrieve")).retrieve("flaky tests", { intent: null, k: 10 })).mode),
-      typesafeApiKeySet: Boolean(process.env.TYPESAFE_API_KEY),
-    },
-    { headers: { "cache-control": "no-store" } },
-  );
-}
-
 export async function POST(request: Request) {
   const parsed = parse(await request.json().catch(() => null));
   if (!parsed.ok) return new Response(parsed.message, { status: 400 });

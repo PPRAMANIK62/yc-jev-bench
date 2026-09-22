@@ -25,9 +25,18 @@ Vercel, as a Node serverless function. Three things the search route reads at ru
 |---|---|---|
 | `data/companies-*.json`, `data/index/**` | 20.1 MB | The tracer does resolve these from the constant paths in `src/lib`, but that is static analysis noticing a string literal, not a guarantee. |
 | `models/Xenova/bge-small-en-v1.5/**` | 34.7 MB | Nothing imports the weights. They are opened by name at runtime. |
-| `node_modules/onnxruntime-node/bin/napi-v6/linux/**` | 71.7 MB | `@huggingface/transformers` reaches the native ONNX backend through a runtime `require` the tracer cannot follow. Leave it out and the route module throws `Cannot find module 'onnxruntime-node'`, which is a 500 on every search. |
+| `node_modules/onnxruntime-node/**` and `node_modules/onnxruntime-common/**` | 71.8 MB | `@huggingface/transformers` reaches the native ONNX backend through a runtime `require` the tracer cannot follow, and `onnxruntime-node`'s own `dist/binding.js` builds its binary path from a template literal. Leave either out and the route module throws `Cannot find module 'onnxruntime-node'`, which is a 500 on every search. The JavaScript matters as much as the binary: shipping `bin/` alone gives you `.node` files with no `package.json` to resolve through, which fails identically. |
 
-The rest of the function is about 49 MB, for a traced total of 175.9 MB against Vercel's 250 MB uncompressed limit. After a build the file list is `.next/server/app/api/search/route.js.nft.json`, with paths relative to that file. Sum them to check the margin. The transformers download cache is excluded, because a machine that has run the benchmark has 690 MB sitting in `node_modules/@huggingface/transformers/.cache`, including a 570 MB reranker the app never loads.
+The rest of the function is about 50 MB, for a traced total of 177.0 MB against Vercel's 250 MB uncompressed limit. After a build the file list is `.next/server/app/api/search/route.js.nft.json`, with paths relative to that file. The transformers download cache is excluded, because a machine that has run the benchmark has 690 MB sitting in `node_modules/@huggingface/transformers/.cache`, including a 570 MB reranker the app never loads.
+
+Check the bundle rather than trusting it:
+
+```sh
+bun run build
+bun run check:bundle
+```
+
+`scripts/check-function-bundle.ts` copies exactly the traced files into a sandbox and embeds a query there under `node`. This is the only check that can catch a missing file, because a normal local run resolves everything out of the full `node_modules` on disk and so passes no matter what the trace left out. The first deploy of this app returned 500 for precisely that reason.
 
 A function's filesystem is read-only, so the weights ship in the repo and `src/lib/embed.ts` sets `env.allowRemoteModels = false`. Left on its default, a missing file turns into a 133 MB download that fails with `EACCES` partway through someone's search.
 
