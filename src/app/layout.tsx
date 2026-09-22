@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Instrument_Sans, Martian_Mono, Source_Serif_4 } from "next/font/google";
 import { MotionConfig } from "motion/react";
+import { Analytics } from "@vercel/analytics/next";
 import { SiteFooter, SiteHeader } from "@/components/site-chrome";
 import "./globals.css";
 
@@ -39,6 +40,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <div className="flex flex-1 flex-col">{children}</div>
           <SiteFooter />
         </MotionConfig>
+        <Analytics />
       </body>
     </html>
   );
