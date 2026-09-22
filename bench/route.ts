@@ -1,16 +1,14 @@
 import { HAIKU, claudeJson } from "../src/lib/claude";
 import { INTENTS, ROUTERS, type CallCost, type Intent, type RouteRun } from "../src/lib/domain";
-import { jevRoute } from "../src/lib/jev";
+import { INTENT_OPTIONS, jevRoute } from "../src/lib/jev";
 import { mapLimit } from "../src/lib/pool";
 import { percentile } from "../src/lib/metrics";
 import { appendJsonl, flag, interleaveByIntent, loadQueries, oneOf, readJsonl } from "./lib";
 
 export const HAIKU_ROUTE_SYSTEM = `You route search queries typed into a directory of YC startups.
-Answer with exactly one word from this list and nothing else:
-competitor: the searcher describes a product or problem and wants companies that do the same thing
-product: the searcher wants a tool, app or service they could use
-job: the searcher wants a startup to work at that is hiring people with their skills
-open_source: the searcher wants open-source software to use or contribute to`;
+The options, with what each means and example queries:
+${JSON.stringify(INTENT_OPTIONS, null, 2)}
+Answer with exactly one option name from ${INTENTS.join(", ")} and nothing else.`;
 
 type Routed = { predicted: Intent; probabilities: Record<Intent, number> | null; confidence: number | null; cost: CallCost };
 

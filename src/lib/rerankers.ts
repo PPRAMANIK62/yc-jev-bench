@@ -1,12 +1,11 @@
 import { AutoModelForSequenceClassification, AutoTokenizer, type PreTrainedModel, type PreTrainedTokenizer, type Tensor } from "@huggingface/transformers";
 import { companyCard } from "./cards";
 import { HAIKU, claudeJson, extractJson } from "./claude";
-import type { ArmId, CallCost, Company, Intent, JevFormulation } from "./domain";
+import type { ArmId, CallCost, Company, JevFormulation } from "./domain";
 import { jevRerank } from "./jev";
 
 export interface RerankInput {
   query: string;
-  intent: Intent;
   companies: Company[]; // retrieval order
   formulation?: JevFormulation;
 }
@@ -49,25 +48,19 @@ async function bgeRerank({ query, companies }: RerankInput): Promise<RerankOutpu
 
 // ------------------------------------------------------------------ haiku, one call per query
 
-const INTENT_MEANING: Record<Intent, string> = {
-  competitor: "The searcher describes a product or problem and wants companies that do the same thing.",
-  product: "The searcher wants a tool, app or service they could use for their need.",
-  job: "The searcher is an engineer looking for a startup to work at: it should be hiring, and its work should fit their skills and location.",
-  open_source: "The searcher wants open-source software to use, self-host or contribute to.",
-};
-
+// Every reranker sees only the query and the cards: Jev and BGE get no intent, so Haiku gets none either.
 export const HAIKU_RERANK_SYSTEM = `You are a search relevance grader for a directory of YC startups.
 You get a search query and a numbered list of company cards.
 Score how well each company matches what the searcher is looking for, from 0 (irrelevant) to 10 (exactly what they want).
 Reply with only a JSON array of integers, one per company, in the order given. No prose.`;
 
-export function haikuRerankPrompt(query: string, intent: Intent, companies: Company[]): string {
+export function haikuRerankPrompt(query: string, companies: Company[]): string {
   const cards = companies.map((c, i) => `[${i + 1}]\n${companyCard(c)}`).join("\n\n");
-  return `Query: ${query}\nWhat the searcher wants: ${INTENT_MEANING[intent]}\n\nCompanies:\n\n${cards}\n\nReturn a JSON array of exactly ${companies.length} integers from 0 to 10.`;
+  return `Query: ${query}\n\nCompanies:\n\n${cards}\n\nReturn a JSON array of exactly ${companies.length} integers from 0 to 10.`;
 }
 
-async function haikuRerank({ query, intent, companies }: RerankInput): Promise<RerankOutput> {
-  const r = await claudeJson(HAIKU, HAIKU_RERANK_SYSTEM, haikuRerankPrompt(query, intent, companies), (text) => {
+async function haikuRerank({ query, companies }: RerankInput): Promise<RerankOutput> {
+  const r = await claudeJson(HAIKU, HAIKU_RERANK_SYSTEM, haikuRerankPrompt(query, companies), (text) => {
     const arr = extractJson(text);
     if (!Array.isArray(arr) || arr.length !== companies.length || !arr.every((x) => Number.isInteger(x) && x >= 0 && x <= 10)) {
       throw new Error(`haiku returned ${Array.isArray(arr) ? arr.length : typeof arr} scores, expected ${companies.length} integers 0-10`);

@@ -39,7 +39,8 @@ const cost = (wallMs: number, inputTokens: number, outputTokens: number): CallCo
   costUsd: inputTokens * JEV_USD_PER_INPUT_TOKEN,
 });
 
-const INTENT_OPTIONS: Record<Intent, { what: string; examples: string[] }> = {
+// Shared with the Haiku router so both routers see the same option descriptions.
+export const INTENT_OPTIONS: Record<Intent, { what: string; examples: string[] }> = {
   competitor: {
     what: "The searcher describes a problem or a business and wants to find companies that do the same thing, such as competitors or companies solving the same problem.",
     examples: ["who else does AI bookkeeping for small agencies", "companies building software for dental clinics to handle insurance claims"],

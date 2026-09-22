@@ -28,7 +28,7 @@ const models = new Set<string>();
 await mapLimit(todo, concurrency, async (q) => {
   const companies = candidates.get(q.id)!.candidateIds.map(companyById);
   try {
-    const r = await RERANKERS[arm]({ query: q.text, intent: q.intent, companies, formulation });
+    const r = await RERANKERS[arm]({ query: q.text, companies, formulation });
     ms.push(r.cost.apiMs ?? r.cost.wallMs);
     models.add(r.model);
     const run: RerankRun = { queryId: q.id, arm, scores: r.scores, confidences: r.confidences, ...r.cost, at: new Date().toISOString() };
