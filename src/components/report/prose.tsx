@@ -337,7 +337,7 @@ function PositionDecayLimitation({ results }: { results: Results }) {
   );
 }
 
-const COMMANDS = `git clone <this repo> && cd yc-jev-bench
+const COMMANDS = `git clone https://github.com/PPRAMANIK62/yc-jev-bench && cd yc-jev-bench
 bun install
 cp .env.example .env        # add TYPESAFE_API_KEY for the Jev arm
 bun bench/index.ts          # build the retrieval index from the frozen snapshot

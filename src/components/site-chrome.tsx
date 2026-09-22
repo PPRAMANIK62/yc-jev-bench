@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { REPO_URL } from "@/lib/links";
 import { NavLink } from "./nav-link";
 
 export function SiteHeader() {
@@ -8,7 +9,17 @@ export function SiteHeader() {
         <Link href="/" className="narrow text-[19px] font-semibold text-ink">
           yc <span className="text-muted-ink">×</span> jev
         </Link>
-        <NavLink />
+        <div className="flex items-baseline gap-5">
+          <a
+            className="label text-muted-ink transition-colors duration-[120ms] hover:text-ink"
+            href={REPO_URL}
+            target="_blank"
+            rel="noreferrer"
+          >
+            code <span aria-hidden>↗</span>
+          </a>
+          <NavLink />
+        </div>
       </div>
     </header>
   );
@@ -25,7 +36,12 @@ export function SiteFooter() {
           </a>
           ), snapshot 2026-09-22. Not affiliated with Y Combinator or TypeSafe.
         </p>
-        <p className="shrink-0">An independent benchmark</p>
+        <p className="shrink-0">
+          An independent benchmark ·{" "}
+          <a className="underline decoration-rule underline-offset-2 hover:decoration-ink" href={REPO_URL}>
+            source on GitHub
+          </a>
+        </p>
       </div>
     </footer>
   );
