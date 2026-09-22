@@ -14,25 +14,27 @@ interface ModelSpec {
   // Input tokens Claude Code adds to every call under the isolation flags below, measured 2026-09-22
   // with a one-character system prompt and prompt (383 and 441 total, minus ~2 for the "x" pair).
   overheadTokens: number;
+  // Calls in flight per process.
+  concurrency: number;
 }
 
 const MODELS: Record<string, ModelSpec> = {
-  [HAIKU]: { usdPerInput: 1 / 1e6, usdPerOutput: 5 / 1e6, overheadTokens: 381 },
+  [HAIKU]: { usdPerInput: 1 / 1e6, usdPerOutput: 5 / 1e6, overheadTokens: 381, concurrency: 8 },
   // Opus 5 list price reconciles exactly with total_cost_usd on the overhead probe (441 in, 27 out → $0.00288).
-  [OPUS]: { usdPerInput: 5 / 1e6, usdPerOutput: 25 / 1e6, overheadTokens: 439 },
+  [OPUS]: { usdPerInput: 5 / 1e6, usdPerOutput: 25 / 1e6, overheadTokens: 439, concurrency: 4 },
 };
 
-const CONCURRENCY = 4;
-let inFlight = 0;
-const waiters: (() => void)[] = [];
-async function slot<T>(fn: () => Promise<T>): Promise<T> {
-  if (inFlight >= CONCURRENCY) await new Promise<void>((r) => waiters.push(r));
-  inFlight++;
+const inFlight = new Map<string, number>();
+const waiters = new Map<string, (() => void)[]>();
+async function slot<T>(model: string, fn: () => Promise<T>): Promise<T> {
+  const queue = waiters.get(model) ?? waiters.set(model, []).get(model)!;
+  if ((inFlight.get(model) ?? 0) >= MODELS[model].concurrency) await new Promise<void>((r) => queue.push(r));
+  inFlight.set(model, (inFlight.get(model) ?? 0) + 1);
   try {
     return await fn();
   } finally {
-    inFlight--;
-    waiters.shift()?.();
+    inFlight.set(model, inFlight.get(model)! - 1);
+    queue.shift()?.();
   }
 }
 
@@ -43,7 +45,8 @@ const ENV = { CLAUDE_CODE_DISABLE_CLAUDE_MDS: "1", CLAUDE_CODE_DISABLE_AUTO_MEMO
 
 export interface ClaudeResult {
   text: string;
-  cost: CallCost;
+  // every CallCost field is known for a Claude call
+  cost: { [K in keyof CallCost]: number };
   totalCostUsd: number;
 }
 
@@ -57,7 +60,6 @@ interface ClaudeJson {
 
 async function runOnce(model: string, system: string, prompt: string): Promise<ClaudeResult> {
   const spec = MODELS[model];
-  if (!spec) throw new Error(`no price/overhead measured for ${model}`);
   mkdirSync(CWD, { recursive: true });
   const t0 = performance.now();
   const { stdout, stderr, code } = await new Promise<{ stdout: string; stderr: string; code: number | null }>((resolve, reject) => {
@@ -100,7 +102,8 @@ async function runOnce(model: string, system: string, prompt: string): Promise<C
 
 // Runs the call and hands the text to parse; one retry when the call or the parse fails.
 export async function claudeJson<T>(model: string, system: string, prompt: string, parse: (text: string) => T): Promise<{ value: T } & ClaudeResult> {
-  return slot(async () => {
+  if (!MODELS[model]) throw new Error(`no price/overhead measured for ${model}`);
+  return slot(model, async () => {
     let lastError: unknown;
     for (let attempt = 0; attempt < 2; attempt++) {
       try {

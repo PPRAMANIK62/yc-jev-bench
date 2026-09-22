@@ -1,26 +1,28 @@
 {
-  "generatedAt": "2026-09-22T13:46:59.169Z",
-  "jevPilot": {
-    "queries": 20,
-    "chosen": "fan_out",
-    "rows": [
-      {
-        "formulation": "per_pair",
-        "description": "one call per candidate; state holds the query and one company card",
-        "ndcg10": 0.7492419679454366,
-        "p50Ms": 2726.466192,
-        "costPer1kUsd": 2.352147,
-        "requestsPerSearch": 100
-      },
-      {
-        "formulation": "fan_out",
-        "description": "one call per search; state holds the query, 100 questions each carry a card",
-        "ndcg10": 0.7663081124841752,
-        "p50Ms": 1203.4740920000004,
-        "costPer1kUsd": 1.1777640000000005,
-        "requestsPerSearch": 1
-      }
-    ]
+  "generatedAt": "2026-09-22T13:52:10.687Z",
+  "pilots": {
+    "jev": {
+      "queries": 20,
+      "chosen": "fan_out",
+      "rows": [
+        {
+          "formulation": "per_pair",
+          "description": "one call per candidate; state holds the query and one company card",
+          "ndcg10": 0.7492419679454366,
+          "p50Ms": 2726.466192,
+          "costPer1kUsd": 2.352147,
+          "requestsPerSearch": 100
+        },
+        {
+          "formulation": "fan_out",
+          "description": "one call per search; state holds the query, 100 questions each carry a card",
+          "ndcg10": 0.7663081124841752,
+          "p50Ms": 1203.4740920000004,
+          "costPer1kUsd": 1.1777640000000005,
+          "requestsPerSearch": 1
+        }
+      ]
+    }
   },
   "snapshot": "data/companies-2026-09-22.json",
   "synthetic": false,

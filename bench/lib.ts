@@ -1,11 +1,16 @@
 import { appendFileSync, existsSync, mkdirSync, readFileSync } from "node:fs";
 import { dirname } from "node:path";
 import { mulberry32 } from "../src/lib/metrics";
-import type { BenchQuery, CandidateSet, QueryId } from "../src/lib/domain";
+import { isPilotArm, type ArmId, type BenchQuery, type CandidateSet, type Formulation, type QueryId } from "../src/lib/domain";
+import { chosenFormulation } from "../src/lib/pilot";
 
 export const QUERIES_FILE = "data/queries.jsonl";
 export const CANDIDATES_FILE = "runs/candidates.jsonl";
 export const SEED = 20260922;
+
+export const rerankFile = (arm: ArmId, formulation?: Formulation) => `runs/rerank-${arm}${formulation ? `-${formulation}` : ""}.jsonl`;
+// The file every reported number for the arm comes from: its pilot pick, for arms that have a pilot.
+export const reportedRerankFile = (arm: ArmId) => rerankFile(arm, isPilotArm(arm) ? chosenFormulation(arm) : undefined);
 
 export function readJsonl<T>(path: string): T[] {
   if (!existsSync(path)) return [];

@@ -15,6 +15,7 @@
     "bench:judge": "bun bench/judge.ts",
     "bench:pilot": "bun bench/pilot.ts",
     "bench:score": "bun bench/score.ts",
+    "bench:position-decay": "bun bench/position-decay.ts",
     "bench:human": "bun bench/grade-human.ts",
     "bench:fixture": "bun bench/fixture.ts",
     "bench": "bun bench/retrieve.ts && bun bench/pilot.ts && bun bench/rerank.ts --arm none && bun bench/rerank.ts --arm bge && bun bench/rerank.ts --arm jev && bun bench/rerank.ts --arm haiku && bun bench/route.ts --router jev && bun bench/route.ts --router haiku && bun bench/judge.ts --split test && bun bench/score.ts"

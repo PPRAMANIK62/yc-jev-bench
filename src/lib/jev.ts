@@ -1,8 +1,7 @@
-import { existsSync, readFileSync } from "node:fs";
-import { join } from "node:path";
 import { TypeSafeClient, choice, noul } from "@typesafe-ai/sdk";
 import { companyCard } from "./cards";
-import { INTENTS, JEV_FORMULATIONS, type CallCost, type Company, type Intent, type JevFormulation, type RouteDecision } from "./domain";
+import { INTENTS, type CallCost, type Company, type Intent, type JevFormulation, type RouteDecision } from "./domain";
+import { chosenFormulation } from "./pilot";
 import { mapLimit } from "./pool";
 
 export const JEV_MODEL = "jev-1.13.0";
@@ -10,17 +9,7 @@ export const JEV_USD_PER_INPUT_TOKEN = 0.042 / 1e6;
 // 1,200 req/min is 20/s; 16 in flight stays under it at Jev's observed sub-second latency.
 const PER_PAIR_CONCURRENCY = 16;
 const REQUEST_TOKEN_LIMIT = 64_000;
-export const JEV_PILOT_FILE = "data/jev-pilot.json";
-
-// Until bench/pilot.ts has run, fall back to per_pair: it is the TypeSafe rerank cookbook's method
-// and avoids the large-state accuracy drop the Jev 1.13 notes warn about.
-export const JEV_CHOSEN: JevFormulation = (() => {
-  const path = join(process.cwd(), JEV_PILOT_FILE);
-  if (!existsSync(path)) return "per_pair";
-  const chosen = (JSON.parse(readFileSync(path, "utf8")) as { chosen: string }).chosen;
-  if (!JEV_FORMULATIONS.includes(chosen as JevFormulation)) throw new Error(`${JEV_PILOT_FILE}: unknown formulation ${chosen}`);
-  return chosen as JevFormulation;
-})();
+export const JEV_CHOSEN = chosenFormulation("jev");
 
 let client: TypeSafeClient | null = null;
 function jev(): TypeSafeClient {

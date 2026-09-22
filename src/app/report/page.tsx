@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { ByIntent, Calibration, KnownItem, Routing } from "@/components/report/breakdowns";
 import { Explorer } from "@/components/report/explorer";
-import { Hero, Hypotheses, JevPilot, Reproduce, SetupDiagram, SyntheticBanner, Trust } from "@/components/report/prose";
+import { Hero, Hypotheses, Pilots, Reproduce, SetupDiagram, SyntheticBanner, Trust } from "@/components/report/prose";
 import { QualityTable } from "@/components/report/quality";
 import { Pending, Section } from "@/components/report/section";
 import { SpeedScatter, SpeedTable } from "@/components/report/speed";
@@ -50,7 +50,7 @@ export default function ReportPage() {
           }
         >
           <SetupDiagram />
-          <JevPilot results={results} />
+          <Pilots results={results} />
         </Section>
 
         <Section

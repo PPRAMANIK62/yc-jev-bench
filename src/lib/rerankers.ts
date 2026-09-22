@@ -1,13 +1,15 @@
 import { AutoModelForSequenceClassification, AutoTokenizer, type PreTrainedModel, type PreTrainedTokenizer, type Tensor } from "@huggingface/transformers";
 import { companyCard } from "./cards";
 import { HAIKU, claudeJson, extractJson } from "./claude";
-import type { ArmId, CallCost, Company, JevFormulation } from "./domain";
+import type { ArmId, CallCost, Company, Formulation, HaikuFormulation } from "./domain";
 import { jevRerank } from "./jev";
+import { formulationFor } from "./pilot";
 
 export interface RerankInput {
   query: string;
   companies: Company[]; // retrieval order
-  formulation?: JevFormulation;
+  // API arms only; defaults to the arm's pilot pick
+  formulation?: Formulation;
 }
 
 export interface RerankOutput {
@@ -57,15 +59,37 @@ export function haikuRerankPrompt(query: string, companies: Company[]): string {
   return `Query: ${query}\n\nCompanies:\n\n${cards}\n\nReturn a JSON array of exactly ${companies.length} integers from 0 to 10.`;
 }
 
-async function haikuRerank({ query, companies }: RerankInput): Promise<RerankOutput> {
-  const r = await claudeJson(HAIKU, HAIKU_RERANK_SYSTEM, haikuRerankPrompt(query, companies), (text) => {
-    const arr = extractJson(text);
-    if (!Array.isArray(arr) || arr.length !== companies.length || !arr.every((x) => Number.isInteger(x) && x >= 0 && x <= 10)) {
-      throw new Error(`haiku returned ${Array.isArray(arr) ? arr.length : typeof arr} scores, expected ${companies.length} integers 0-10`);
-    }
-    return arr as number[];
-  });
-  return { scores: r.value, confidences: null, cost: r.cost, model: HAIKU };
+const HAIKU_BATCH: Record<HaikuFormulation, number> = { batch_100: 100, batch_10: 10 };
+
+// Every batch is sent at once, so a search takes as long as its slowest call and costs the sum of them.
+async function haikuRerank({ query, companies, formulation }: RerankInput): Promise<RerankOutput> {
+  const size = HAIKU_BATCH[formulationFor("haiku", formulation)];
+  const batches = Array.from({ length: Math.ceil(companies.length / size) }, (_, i) => companies.slice(i * size, (i + 1) * size));
+  const results = await Promise.all(
+    batches.map((batch) =>
+      claudeJson(HAIKU, HAIKU_RERANK_SYSTEM, haikuRerankPrompt(query, batch), (text) => {
+        const arr = extractJson(text);
+        if (!Array.isArray(arr) || arr.length !== batch.length || !arr.every((x) => Number.isInteger(x) && x >= 0 && x <= 10)) {
+          throw new Error(`haiku returned ${Array.isArray(arr) ? arr.length : typeof arr} scores, expected ${batch.length} integers 0-10`);
+        }
+        return arr as number[];
+      }),
+    ),
+  );
+  const sum = (k: keyof CallCost) => results.reduce((s, r) => s + r.cost[k], 0);
+  const max = (k: keyof CallCost) => Math.max(...results.map((r) => r.cost[k]));
+  return {
+    scores: results.flatMap((r) => r.value),
+    confidences: null,
+    cost: {
+      wallMs: max("wallMs"),
+      apiMs: max("apiMs"),
+      inputTokens: sum("inputTokens"),
+      outputTokens: sum("outputTokens"),
+      costUsd: sum("costUsd"),
+    },
+    model: HAIKU,
+  };
 }
 
 
@@ -73,7 +97,7 @@ export const RERANKERS: Record<ArmId, (input: RerankInput) => Promise<RerankOutp
   none: async ({ companies }) => ({ scores: companies.map((_, i) => companies.length - i), confidences: null, cost: localCost(0), model: "retrieval order" }),
   bge: bgeRerank,
   haiku: haikuRerank,
-  jev: async ({ query, companies, formulation }) => jevRerank(query, companies, formulation),
+  jev: async ({ query, companies, formulation }) => jevRerank(query, companies, formulationFor("jev", formulation)),
 };
 
 // Stable: ties keep retrieval order.

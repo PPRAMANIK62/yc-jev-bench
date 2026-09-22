@@ -1,26 +1,50 @@
 {
   "generatedAt": "2026-01-01T00:00:00.000Z",
-  "jevPilot": {
-    "queries": 20,
-    "chosen": "per_pair",
-    "rows": [
-      {
-        "formulation": "per_pair",
-        "description": "one call per candidate, query + card in state",
-        "ndcg10": 0.6,
-        "p50Ms": 500,
-        "costPer1kUsd": 0.5,
-        "requestsPerSearch": 100
-      },
-      {
-        "formulation": "fan_out",
-        "description": "one call per query, 100 questions each carrying a card",
-        "ndcg10": 0.5,
-        "p50Ms": 300,
-        "costPer1kUsd": 0.5,
-        "requestsPerSearch": 1
-      }
-    ]
+  "pilots": {
+    "jev": {
+      "queries": 20,
+      "chosen": "per_pair",
+      "rows": [
+        {
+          "formulation": "per_pair",
+          "description": "one call per candidate, query + card in state",
+          "ndcg10": 0.6,
+          "p50Ms": 500,
+          "costPer1kUsd": 0.5,
+          "requestsPerSearch": 100
+        },
+        {
+          "formulation": "fan_out",
+          "description": "one call per query, 100 questions each carrying a card",
+          "ndcg10": 0.5,
+          "p50Ms": 300,
+          "costPer1kUsd": 0.5,
+          "requestsPerSearch": 1
+        }
+      ]
+    },
+    "haiku": {
+      "queries": 20,
+      "chosen": "batch_10",
+      "rows": [
+        {
+          "formulation": "batch_100",
+          "description": "one prompt per search scoring all 100 cards",
+          "ndcg10": 0.6,
+          "p50Ms": 5000,
+          "costPer1kUsd": 17,
+          "requestsPerSearch": 1
+        },
+        {
+          "formulation": "batch_10",
+          "description": "10 prompts per search sent at once, 10 cards each",
+          "ndcg10": 0.7,
+          "p50Ms": 2000,
+          "costPer1kUsd": 20,
+          "requestsPerSearch": 10
+        }
+      ]
+    }
   },
   "snapshot": "data/companies-2026-09-22.json",
   "synthetic": true,

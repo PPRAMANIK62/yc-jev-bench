@@ -5,7 +5,7 @@ import { companyById } from "../src/lib/companies";
 import { OPUS, claudeJson, extractJson } from "../src/lib/claude";
 import { ARMS, type BenchQuery, type CompanyId, type Grade, type GradeRecord, type Intent, type QueryId, type RerankRun } from "../src/lib/domain";
 import { mapLimit } from "../src/lib/pool";
-import { appendJsonl, flag, hashSeed, loadQueries, oneOf, readJsonl, seededShuffle } from "./lib";
+import { appendJsonl, flag, hashSeed, loadQueries, oneOf, readJsonl, reportedRerankFile, seededShuffle } from "./lib";
 import { HUMAN_GRADES, OPUS_GRADES, pooledPairs } from "./pool";
 
 const PER_CALL = 20;
@@ -46,7 +46,7 @@ const split = flag("split") ? oneOf("split", flag("split"), ["dev", "test"] as c
 const onlyWith = flag("only-with") ? oneOf("only-with", flag("only-with"), ARMS) : null;
 // Queries a human has graded are always in scope, so judge-vs-human agreement has pairs to compare.
 const scope = onlyWith
-  ? new Set([...readJsonl<RerankRun>(`runs/rerank-${onlyWith}.jsonl`), ...readJsonl<GradeRecord>(HUMAN_GRADES)].map((r) => r.queryId))
+  ? new Set([...readJsonl<RerankRun>(reportedRerankFile(onlyWith)), ...readJsonl<GradeRecord>(HUMAN_GRADES)].map((r) => r.queryId))
   : null;
 const queries = new Map(loadQueries().map((q) => [q.id, q]));
 const graded = new Set(readJsonl<GradeRecord>(OPUS_GRADES).map((g) => `${g.queryId}:${g.companyId}`));

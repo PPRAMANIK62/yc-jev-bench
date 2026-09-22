@@ -1,18 +1,17 @@
 import { companyById } from "../src/lib/companies";
-import { ARMS, JEV_FORMULATIONS, type RerankRun } from "../src/lib/domain";
-import { JEV_CHOSEN } from "../src/lib/jev";
+import { ARMS, FORMULATIONS, isPilotArm, type RerankRun } from "../src/lib/domain";
+import { chosenFormulation } from "../src/lib/pilot";
 import { RERANKERS } from "../src/lib/rerankers";
-import { appendJsonl, flag, interleaveByIntent, loadCandidates, loadQueries, oneOf, readJsonl } from "./lib";
+import { appendJsonl, flag, interleaveByIntent, loadCandidates, loadQueries, oneOf, readJsonl, rerankFile } from "./lib";
 import { mapLimit } from "../src/lib/pool";
 import { percentile } from "../src/lib/metrics";
-
-export const rerankFile = (arm: string, formulation?: string) => `runs/rerank-${arm}${formulation ? `-${formulation}` : ""}.jsonl`;
 
 const arm = oneOf("arm", flag("arm"), ARMS);
 const split = flag("split") ? oneOf("split", flag("split"), ["dev", "test"] as const) : "test";
 const limit = flag("limit") ? Number(flag("limit")) : Infinity;
-const formulation = arm === "jev" ? oneOf("formulation", flag("formulation") ?? JEV_CHOSEN, JEV_FORMULATIONS) : undefined;
-// Haiku and Jev calls go over the network; Jev per_pair already fans out 16 requests per query.
+const formulation = isPilotArm(arm) ? oneOf("formulation", flag("formulation") ?? chosenFormulation(arm), FORMULATIONS[arm]) : undefined;
+// Haiku and Jev calls go over the network; Jev per_pair already fans out 16 requests per query, and
+// src/lib/claude.ts caps Haiku calls in flight across queries.
 const concurrency = arm === "haiku" ? 4 : arm === "jev" && formulation === "fan_out" ? 8 : 1;
 
 const out = rerankFile(arm, formulation);

@@ -66,7 +66,7 @@ export type QuerySource =
 
 export interface BenchQuery {
   id: QueryId;
-  // dev queries tune the Jev formulation; test queries produce every reported number
+  // dev queries pick each API arm's formulation; test queries produce every reported number
   split: "dev" | "test";
   intent: Intent;
   text: string;
@@ -90,7 +90,7 @@ export interface CandidateSet {
   candidateIds: CompanyId[]; // hybrid retrieval order, length <= 100
 }
 
-// runs/rerank-<arm>.jsonl: one line per query.
+// runs/rerank-<arm>[-<formulation>].jsonl: one line per query.
 export interface RerankRun extends CallCost {
   queryId: QueryId;
   arm: ArmId;
@@ -198,12 +198,20 @@ export interface ExplorerQuery {
   rankings: Partial<Record<ArmId, { id: CompanyId; grade: Grade | null }[]>>;
 }
 
-// Jev can be asked two ways; a pilot on held-out dev queries picks one before the test set is touched.
+// Jev and Haiku can each be asked more than one way; a pilot per arm on held-out dev queries picks one
+// before the test set is touched.
 export const JEV_FORMULATIONS = ["per_pair", "fan_out"] as const;
-export type JevFormulation = (typeof JEV_FORMULATIONS)[number];
+export const HAIKU_FORMULATIONS = ["batch_100", "batch_10"] as const;
+export const FORMULATIONS = { jev: JEV_FORMULATIONS, haiku: HAIKU_FORMULATIONS } as const;
+export type PilotArm = keyof typeof FORMULATIONS;
+export type Formulation<A extends PilotArm = PilotArm> = (typeof FORMULATIONS)[A][number];
+export type JevFormulation = Formulation<"jev">;
+export type HaikuFormulation = Formulation<"haiku">;
 
-export interface JevPilotRow {
-  formulation: JevFormulation;
+export const isPilotArm = (arm: ArmId): arm is PilotArm => arm in FORMULATIONS;
+
+export interface PilotRow<A extends PilotArm = PilotArm> {
+  formulation: Formulation<A>;
   description: string;
   ndcg10: number;
   p50Ms: number;
@@ -211,9 +219,18 @@ export interface JevPilotRow {
   requestsPerSearch: number;
 }
 
+// data/pilot-<arm>.json
+export interface Pilot<A extends PilotArm = PilotArm> {
+  queries: number;
+  chosen: Formulation<A>;
+  rows: PilotRow<A>[];
+}
+
+export type Pilots = { [A in PilotArm]?: Pilot<A> };
+
 export interface Results {
   generatedAt: string;
-  jevPilot: { queries: number; chosen: JevFormulation; rows: JevPilotRow[] } | null;
+  pilots: Pilots;
   snapshot: string; // data file the run used
   // true only for the UI development fixture; the report shows a banner when set
   synthetic: boolean;

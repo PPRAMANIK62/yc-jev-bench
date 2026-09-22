@@ -1,6 +1,6 @@
 import { ARMS, INTENTS, type Results, type Verdict } from "@/lib/domain";
 import { int, metric, ms, pct, times, usd } from "@/lib/format";
-import { armLabel, armOf, Swatch } from "./arms";
+import { ArmName, armLabel, armOf, Swatch } from "./arms";
 
 export function SyntheticBanner() {
   return (
@@ -161,43 +161,51 @@ export function SetupDiagram() {
   );
 }
 
-export function JevPilot({ results }: { results: Results }) {
-  const pilot = results.jevPilot;
-  if (!pilot) return null;
+export function Pilots({ results }: { results: Results }) {
+  const pilots = (["jev", "haiku"] as const).flatMap((arm) => {
+    const pilot = results.pilots[arm];
+    return pilot ? [{ arm, pilot }] : [];
+  });
+  if (!pilots.length) return null;
   return (
     <div className="mt-10">
       <p className="prose-paper text-ink">
-        Jev can be asked two ways. Before the test set was touched, a pilot on {pilot.queries} held-out dev queries picked
-        one; every Jev number below uses it.
+        Jev and Claude Haiku can each be asked two ways. Both got the same treatment: before the test set was touched, a
+        pilot on {int(pilots[0].pilot.queries)} held-out dev queries picked one formulation per model by nDCG@10, with
+        latency breaking near-ties. Every number below uses the pick.
       </p>
-      <div className="relative -mx-4 mt-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
-        <table className="w-full min-w-[620px] border-collapse text-left">
-          <caption className="sr-only">Jev formulation pilot</caption>
-          <thead>
-            <tr className="label border-b border-rule text-muted-ink">
-              <th scope="col" className="py-2 pr-4 font-normal">Formulation</th>
-              <th scope="col" className="py-2 pr-4 text-right font-normal">nDCG@10</th>
-              <th scope="col" className="py-2 pr-4 text-right font-normal">p50</th>
-              <th scope="col" className="py-2 pr-4 text-right font-normal">Per 1,000</th>
-              <th scope="col" className="py-2 text-right font-normal">Requests per search</th>
-            </tr>
-          </thead>
-          <tbody className="font-mono text-[13px] tnum whitespace-nowrap">
-            {pilot.rows.map((r) => (
-              <tr key={r.formulation} className="border-b border-rule">
-                <th scope="row" className="py-3 pr-4 font-sans text-[15px] font-normal text-ink">
-                  <span className="font-medium">{r.description}</span>
-                  {r.formulation === pilot.chosen ? <span className="label ml-2 rounded-full bg-arm-jev px-2 py-px text-on-jev">chosen</span> : null}
-                </th>
-                <td className="py-3 pr-4 text-right">{metric(r.ndcg10)}</td>
-                <td className="py-3 pr-4 text-right">{ms(r.p50Ms)}</td>
-                <td className="py-3 pr-4 text-right">{usd(r.costPer1kUsd)}</td>
-                <td className="py-3 text-right">{int(r.requestsPerSearch)}</td>
+      {pilots.map(({ arm, pilot }) => (
+        <div key={arm} className="relative -mx-4 mt-6 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+          <table className="w-full min-w-[620px] border-collapse text-left">
+            <caption className="label pb-2 text-left text-ink">
+              <ArmName arm={arm} />
+            </caption>
+            <thead>
+              <tr className="label border-b border-rule text-muted-ink">
+                <th scope="col" className="py-2 pr-4 font-normal">Formulation</th>
+                <th scope="col" className="py-2 pr-4 text-right font-normal">nDCG@10</th>
+                <th scope="col" className="py-2 pr-4 text-right font-normal">p50</th>
+                <th scope="col" className="py-2 pr-4 text-right font-normal">Per 1,000</th>
+                <th scope="col" className="py-2 text-right font-normal">Requests per search</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody className="font-mono text-[13px] tnum whitespace-nowrap">
+              {pilot.rows.map((r) => (
+                <tr key={r.formulation} className="border-b border-rule">
+                  <th scope="row" className="py-3 pr-4 font-sans text-[15px] font-normal text-ink">
+                    <span className="font-medium">{r.description}</span>
+                    {r.formulation === pilot.chosen ? <span className="label ml-2 rounded-full bg-ink px-2 py-px text-paper">chosen</span> : null}
+                  </th>
+                  <td className="py-3 pr-4 text-right">{metric(r.ndcg10)}</td>
+                  <td className="py-3 pr-4 text-right">{ms(r.p50Ms)}</td>
+                  <td className="py-3 pr-4 text-right">{usd(r.costPer1kUsd)}</td>
+                  <td className="py-3 text-right">{int(r.requestsPerSearch)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ))}
     </div>
   );
 }

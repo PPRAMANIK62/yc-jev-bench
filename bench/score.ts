@@ -16,6 +16,7 @@ import {
   type Grade,
   type GradeRecord,
   type HypothesisResult,
+  type Pilots,
   type Intent,
   type QualityMetrics,
   type QueryId,
@@ -26,9 +27,9 @@ import {
   type RouterResult,
   type SpeedCost,
 } from "../src/lib/domain";
-import { JEV_CHOSEN, JEV_PILOT_FILE } from "../src/lib/jev";
+import { readPilot } from "../src/lib/pilot";
 import { bootstrap, calibrationBins, cohenKappa, confusionMatrix, mean, percentile } from "../src/lib/metrics";
-import { loadCandidates, loadQueries, readJsonl } from "./lib";
+import { loadCandidates, loadQueries, readJsonl, reportedRerankFile } from "./lib";
 import { HUMAN_GRADES, OPUS_GRADES, gradeMap, queryQuality, rankedIds } from "./pool";
 
 const OUT = "src/generated/results.json";
@@ -40,10 +41,9 @@ const byId = new Map(test.map((q) => [q.id, q]));
 const candidates = loadCandidates();
 const grades = gradeMap();
 
-const armFile = (arm: ArmId) => (arm === "jev" ? `runs/rerank-jev-${JEV_CHOSEN}.jsonl` : `runs/rerank-${arm}.jsonl`);
 const armRuns = new Map<ArmId, Map<QueryId, RerankRun>>();
 for (const arm of ARMS) {
-  const runs = readJsonl<RerankRun>(armFile(arm)).filter((r) => byId.has(r.queryId));
+  const runs = readJsonl<RerankRun>(reportedRerankFile(arm)).filter((r) => byId.has(r.queryId));
   if (runs.length) armRuns.set(arm, new Map(runs.map((r) => [r.queryId, r])));
 }
 const routeRuns = new Map<RouterId, Map<QueryId, RouteRun>>();
@@ -228,9 +228,12 @@ for (const q of explorerQueries) {
 }
 
 
+// JSON.stringify drops the undefined of an arm with no pilot yet.
+const pilots: Pilots = { jev: readPilot("jev") ?? undefined, haiku: readPilot("haiku") ?? undefined };
+
 const results: Results = {
   generatedAt: new Date().toISOString(),
-  jevPilot: existsSync(JEV_PILOT_FILE) ? (JSON.parse(readFileSync(JEV_PILOT_FILE, "utf8")) as Results["jevPilot"]) : null,
+  pilots,
   snapshot: SNAPSHOT,
   synthetic: false,
   queryCounts: Object.fromEntries(INTENTS.map((i) => [i, test.filter((q) => q.intent === i).length])) as Record<Intent, number>,

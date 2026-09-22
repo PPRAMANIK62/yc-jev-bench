@@ -26,12 +26,13 @@ Every script is resumable. It appends to its output, skips work already done, an
 | Collect queries from Hacker News | `bun run bench:collect` | `data/queries.jsonl` |
 | Build the embedding index | `bun run bench:index` | `data/index/` |
 | Freeze 100 candidates per query | `bun run bench:retrieve` | `runs/candidates.jsonl` |
-| Pick the Jev formulation on the dev split | `bun run bench:pilot` | `data/jev-pilot.json` |
-| Rerank | `bun run bench:rerank --arm none\|bge\|haiku\|jev [--limit N]` | `runs/rerank-<arm>.jsonl` |
+| Pick the Jev and Haiku formulations on the dev split | `bun run bench:pilot` | `data/pilot-<arm>.json` |
+| Rerank | `bun run bench:rerank --arm none\|bge\|haiku\|jev [--formulation F] [--split dev\|test] [--limit N]` | `runs/rerank-<arm>[-<formulation>].jsonl` |
 | Route | `bun run bench:route --router haiku\|jev [--limit N]` | `runs/route-<router>.jsonl` |
 | Grade pooled results with Opus | `bun run bench:judge --split test` | `data/grades.opus.jsonl` |
 | Hand-grade the agreement sample | `bun run bench:human` | `data/grades.human.jsonl` |
 | Compute every number | `bun run bench:score` | `src/generated/results.json` |
+| Score-vs-grade agreement by retrieval position | `bun run bench:position-decay [--split dev\|test]` | stdout |
 
 `bun run bench` runs everything from retrieval to scoring in order. `/report` is prerendered, so rebuild after rescoring.
 
