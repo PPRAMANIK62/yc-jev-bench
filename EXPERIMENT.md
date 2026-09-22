@@ -74,9 +74,9 @@ Hard filters come from the router's intent, not from parsing the query. Jev cann
 | Arm | Reranker | Notes |
 |---|---|---|
 | A | None (hybrid retrieval order) | Floor. If a reranker cannot beat this, it is not worth running. |
-| B | Cross-encoder, `bge-reranker-v2-m3` | Free, local, the standard open baseline. |
+| B | Cross-encoder, `bge-reranker-v2-m3` (int8 ONNX via transformers.js, CPU) | Free, local, the standard open baseline. 100 pairs in ~2s on a 16-core CPU. |
 | C | Claude Haiku 4.5, pointwise 0–10 score | The LLM Jev claims to replace. Also run listwise once as a sanity check. |
-| D | Jev Score, pointwise | Situation = query + company card. One typed question: "how well does this company match?" |
+| D | Jev (`jev-1.13.0`), one Noul per candidate | "Is this company what the searcher is looking for?" Formulation picked by the dev-split pilot below. |
 
 **How arm C runs:** through Claude Code headless on a Claude subscription, not an API key. This is benchmark-only; the shipped app never calls Claude. Tested 2026-09-22:
 
@@ -140,7 +140,7 @@ Everything goes in `labels/` as JSONL, published with the post.
 
 Report per intent, not just overall. A reranker that wins on competitor queries and loses on job queries is a finding.
 
-Run each arm 3 times for latency. Report the region, time of day and concurrency, since latency to a hosted API is mostly network.
+Latency is the distribution over all test queries, one run each. Report the region, time of day and concurrency, since latency to a hosted API is mostly network. Jev reports no server timing, so its latency is wall time; Haiku's is `duration_api_ms`. The report labels which is which.
 
 ## What would make this worth reading
 
@@ -158,10 +158,10 @@ Run each arm 3 times for latency. Report the region, time of day and concurrency
 
 ## Open questions to settle before building
 
-- **Jev access and pricing.** Confirm API access, rate limits, and the published price per call before writing labels. If there is a waitlist, apply today.
-- **How Jev takes a company card.** Its input is a structured situation. Decide whether the card is one text field or typed fields (industry, tags, hiring). Test both on 10 queries and pick one. Do not tune per arm.
-- **Embedding model for retrieval.** Pick one and freeze it. It is not under test.
-- **Jev pointwise vs batched.** If Jev evaluates many questions in one call, score all 100 candidates in a single request. That is its best case, and the post should test its best case.
+- **Jev access.** Settled: the user has a key. `jev-1.13.0` costs $0.042 per million input tokens, output free. Limits are 1,200 requests/min and 250k tokens/s.
+- **How Jev sees a company.** Settled: the same text card every arm and the judge see (`src/lib/cards.ts`). No per-arm tuning.
+- **Embedding model for retrieval.** Settled and frozen: `bge-small-en-v1.5`, fused with BM25 by reciprocal rank fusion.
+- **Jev per pair vs fan-out.** Jev's docs warn that large state degrades answers, so all 100 cards can't go in one state. Two formulations remain. *Per pair* makes 100 calls, each with `state = {query, card}`. *Fan-out* makes one call with `state = {query}` and 100 questions, each carrying one card. A pilot on a separate **dev split** (5 queries per intent, never reported as results) picks one by nDCG@10, then latency. The test split is untouched until the pick is made. The report shows the pilot table.
 
 ## Out of scope for v1
 
