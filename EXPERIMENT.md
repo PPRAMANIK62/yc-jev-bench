@@ -75,7 +75,7 @@ Hard filters come from the router's intent, not from parsing the query. Jev cann
 |---|---|---|
 | A | None (hybrid retrieval order) | Floor. If a reranker cannot beat this, it is not worth running. |
 | B | Cross-encoder, `bge-reranker-v2-m3` (int8 ONNX via transformers.js, CPU) | Free, local, the standard open baseline. 100 pairs in ~2s on a 16-core CPU. |
-| C | Claude Haiku 4.5, pointwise 0–10 score | The LLM Jev claims to replace. Also run listwise once as a sanity check. |
+| C | Claude Haiku 4.5, pointwise 0–10 score | The LLM Jev claims to replace. Formulation picked by the dev-split pilot below. Also run listwise once as a sanity check. |
 | D | Jev (`jev-1.13.0`), one Noul per candidate | "Is this company what the searcher is looking for?" Formulation picked by the dev-split pilot below. |
 
 **How arm C runs:** through Claude Code headless on a Claude subscription, not an API key. This is benchmark-only; the shipped app never calls Claude. Tested 2026-09-22:
@@ -88,7 +88,8 @@ MAX_THINKING_TOKENS=0 claude -p --model claude-haiku-4-5-20251001 \
 ```
 
 - `MAX_THINKING_TOKENS=0` is required. Without it Haiku thought for 277 tokens to answer one digit (4.0s vs 1.0s).
-- Score all 100 cards in one prompt, returned as JSON, so it takes 200 calls, not 20,000. Jev gets the same batched treatment.
+- Score the cards in batches, returned as a JSON array per prompt, so a search takes 1 or 10 calls, not 100. Like Jev, Haiku gets a dev-split pilot between two formulations: *batch_100* scores all 100 cards in one prompt; *batch_10* sends 10 prompts of 10 cards at once, same system prompt and card text, each batch numbered 1–10. A search's latency is its slowest prompt (`duration_api_ms`), its cost the sum. The pilot picked batch_10 (dev nDCG@10 0.67 vs 0.64).
+- **Why the pilot exists: position decay.** Scoring all 100 cards in one prompt, Haiku's agreement with the judge falls with a card's place in the list. On the test split (`bun bench/position-decay.ts`), Pearson r between Haiku's score and the Opus grade by retrieval positions 1–25, 26–50, 51–75, 76–100 is 0.62, 0.38, 0.39, 0.27 for batch_100 and 0.70, 0.61, 0.62, 0.52 for batch_10, against 0.67, 0.60, 0.62, 0.61 for Jev (fan_out). The share of relevant candidates is flat across the bands (0.38, 0.43, 0.45, 0.43). On test, batch_100 scored nDCG@10 0.59 and batch_10 0.73, so a 100-card prompt measured the prompt as much as the model.
 - Cost comes from the `usage` token counts × Haiku list price ($1/M in, $5/M out), which matches `total_cost_usd`. Count only the benchmark prompt's tokens. Claude Code adds about 700 input tokens of its own per call.
 - Latency uses `duration_api_ms`, not `duration_ms`, and the post labels it "via Claude Code". It is close to raw API latency, not identical.
 - Do not use `--bare`. It only accepts an API key, not subscription login.
@@ -161,7 +162,7 @@ Latency is the distribution over all test queries, one run each. Report the regi
 - **Jev access.** Settled: the user has a key. `jev-1.13.0` costs $0.042 per million input tokens, output free. Limits are 1,200 requests/min and 250k tokens/s.
 - **How Jev sees a company.** Settled: the same text card every arm and the judge see (`src/lib/cards.ts`). No per-arm tuning.
 - **Embedding model for retrieval.** Settled and frozen: `bge-small-en-v1.5`, fused with BM25 by reciprocal rank fusion.
-- **Jev per pair vs fan-out.** Jev's docs warn that large state degrades answers, so all 100 cards can't go in one state. Two formulations remain. *Per pair* makes 100 calls, each with `state = {query, card}`. *Fan-out* makes one call with `state = {query}` and 100 questions, each carrying one card. A pilot on a separate **dev split** (5 queries per intent, never reported as results) picks one by nDCG@10, then latency. The test split is untouched until the pick is made. The report shows the pilot table.
+- **Jev per pair vs fan-out.** Jev's docs warn that large state degrades answers, so all 100 cards can't go in one state. Two formulations remain. *Per pair* makes 100 calls, each with `state = {query, card}`. *Fan-out* makes one call with `state = {query}` and 100 questions, each carrying one card. A pilot on a separate **dev split** (5 queries per intent, never reported as results) picks one by nDCG@10, then latency. Haiku gets the same pilot between one 100-card prompt and ten 10-card prompts (see arm C). Jev's test split was untouched until its pick was made. Haiku's pilot came after a first full test run with the 100-card prompt; its pick still reads only dev queries. The report shows both pilot tables.
 
 ## Out of scope for v1
 

@@ -102,6 +102,11 @@ const results: Results = {
       ],
     },
   },
+  positionDecay: [
+    { arm: "haiku", formulation: "batch_100", queries: 200, r: [0.6, 0.4, 0.4, 0.2], relevant: [0.4, 0.4, 0.4, 0.4], pairs: [4000, 1800, 1200, 1000] },
+    { arm: "haiku", formulation: "batch_10", queries: 200, r: [0.6, 0.55, 0.55, 0.5], relevant: [0.4, 0.4, 0.4, 0.4], pairs: [4000, 1800, 1200, 1000] },
+    { arm: "jev", formulation: "per_pair", queries: 200, r: [0.7, 0.6, 0.65, 0.6], relevant: [0.4, 0.4, 0.4, 0.4], pairs: [4000, 1800, 1200, 1000] },
+  ],
   snapshot: SNAPSHOT,
   synthetic: true,
   queryCounts: { competitor: 50, product: 50, job: 50, open_source: 50 },

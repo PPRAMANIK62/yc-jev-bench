@@ -36,4 +36,4 @@ Every script is resumable. It appends to its output, skips work already done, an
 
 `bun run bench` runs everything from retrieval to scoring in order. `/report` is prerendered, so rebuild after rescoring.
 
-The Haiku and Opus steps use the Claude subscription behind your `claude` CLI. For the full test split that's about 200 Haiku calls and a few hundred Opus calls.
+The Haiku and Opus steps use the Claude subscription behind your `claude` CLI. Haiku's pilot picked ten prompts of 10 cards per search, so the full test split is about 2,000 Haiku calls (8 in flight) plus a few hundred Opus calls.

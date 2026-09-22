@@ -5,6 +5,7 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { companyById, SNAPSHOT } from "../src/lib/companies";
 import {
   ARMS,
+  FORMULATIONS,
   INTENTS,
   ROUTERS,
   type ArmId,
@@ -13,10 +14,13 @@ import {
   type CompanyId,
   type ExplorerCompany,
   type ExplorerQuery,
+  type Formulation,
   type Grade,
   type GradeRecord,
   type HypothesisResult,
+  type PilotArm,
   type Pilots,
+  type PositionDecay,
   type Intent,
   type QualityMetrics,
   type QueryId,
@@ -29,8 +33,8 @@ import {
 } from "../src/lib/domain";
 import { readPilot } from "../src/lib/pilot";
 import { bootstrap, calibrationBins, cohenKappa, confusionMatrix, mean, percentile } from "../src/lib/metrics";
-import { loadCandidates, loadQueries, readJsonl, reportedRerankFile } from "./lib";
-import { HUMAN_GRADES, OPUS_GRADES, gradeMap, queryQuality, rankedIds } from "./pool";
+import { loadCandidates, loadQueries, readJsonl, rerankFile, reportedRerankFile } from "./lib";
+import { HUMAN_GRADES, OPUS_GRADES, gradeMap, positionDecay, queryQuality, rankedIds } from "./pool";
 
 const OUT = "src/generated/results.json";
 // Below this many graded queries a quality hypothesis stays pending rather than being called on noise.
@@ -228,12 +232,20 @@ for (const q of explorerQueries) {
 }
 
 
+const positionDecayRows: PositionDecay[] = (Object.keys(FORMULATIONS) as PilotArm[]).flatMap((a) =>
+  FORMULATIONS[a].flatMap((formulation: Formulation) => {
+    const runs = readJsonl<RerankRun>(rerankFile(a, formulation)).filter((r) => byId.has(r.queryId));
+    return runs.length ? [{ arm: a, formulation, ...positionDecay(runs, grades, candidates) }] : [];
+  }),
+);
+
 // JSON.stringify drops the undefined of an arm with no pilot yet.
 const pilots: Pilots = { jev: readPilot("jev") ?? undefined, haiku: readPilot("haiku") ?? undefined };
 
 const results: Results = {
   generatedAt: new Date().toISOString(),
   pilots,
+  positionDecay: positionDecayRows,
   snapshot: SNAPSHOT,
   synthetic: false,
   queryCounts: Object.fromEntries(INTENTS.map((i) => [i, test.filter((q) => q.intent === i).length])) as Record<Intent, number>,

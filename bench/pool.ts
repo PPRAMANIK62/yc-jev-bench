@@ -1,6 +1,6 @@
 import { readdirSync } from "node:fs";
-import type { CompanyId, Grade, GradeRecord, QueryId, RerankRun } from "../src/lib/domain";
-import { ndcgAt, recallAt, reciprocalRank } from "../src/lib/metrics";
+import { POSITION_BAND, type CompanyId, type Grade, type GradeRecord, type QueryId, type RerankRun } from "../src/lib/domain";
+import { ndcgAt, pearson, recallAt, reciprocalRank } from "../src/lib/metrics";
 import { orderByScores } from "../src/lib/rerankers";
 import { SEED, hashSeed, interleaveByIntent, loadCandidates, loadQueries, readJsonl, seededShuffle } from "./lib";
 
@@ -76,4 +76,23 @@ export function humanPairs(queryId: QueryId): CompanyId[] {
   }
   const top = [...best.entries()].sort((a, b) => a[1] - b[1] || a[0] - b[0]).slice(0, HUMAN_PER_QUERY).map(([id]) => id);
   return seededShuffle(top.sort((a, b) => a - b), hashSeed(queryId));
+}
+
+export function positionDecay(runs: RerankRun[], grades: Map<QueryId, Map<CompanyId, Grade>>, candidates: Map<QueryId, { candidateIds: CompanyId[] }>) {
+  const bands: { scores: number[]; grades: number[] }[] = [];
+  for (const run of runs) {
+    candidates.get(run.queryId)!.candidateIds.forEach((id, i) => {
+      const grade = grades.get(run.queryId)?.get(id);
+      if (grade === undefined) return;
+      const band = (bands[Math.floor(i / POSITION_BAND)] ??= { scores: [], grades: [] });
+      band.scores.push(run.scores[i]);
+      band.grades.push(grade);
+    });
+  }
+  return {
+    queries: runs.length,
+    r: bands.map((b) => pearson(b.scores, b.grades)),
+    relevant: bands.map((b) => b.grades.filter((g) => g >= 1).length / b.grades.length),
+    pairs: bands.map((b) => b.grades.length),
+  };
 }

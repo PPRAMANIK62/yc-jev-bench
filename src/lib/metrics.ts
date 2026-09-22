@@ -39,6 +39,20 @@ export function mulberry32(seed: number) {
 
 export const mean = (xs: number[]) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : NaN);
 
+export function pearson(xs: number[], ys: number[]): number {
+  const mx = mean(xs);
+  const my = mean(ys);
+  let sxy = 0;
+  let sxx = 0;
+  let syy = 0;
+  for (let i = 0; i < xs.length; i++) {
+    sxy += (xs[i] - mx) * (ys[i] - my);
+    sxx += (xs[i] - mx) ** 2;
+    syy += (ys[i] - my) ** 2;
+  }
+  return sxy / Math.sqrt(sxx * syy);
+}
+
 export function bootstrap(values: number[], resamples = 1000, seed = 20260922): Interval {
   if (!values.length) return { mean: NaN, lo: NaN, hi: NaN };
   const rand = mulberry32(seed);

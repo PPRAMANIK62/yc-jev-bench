@@ -228,9 +228,22 @@ export interface Pilot<A extends PilotArm = PilotArm> {
 
 export type Pilots = { [A in PilotArm]?: Pilot<A> };
 
+// How well one run's scores agree with the judge, by where the candidate sat in the retrieval list.
+// Index i covers retrieval positions [i * POSITION_BAND, (i + 1) * POSITION_BAND).
+export const POSITION_BAND = 25;
+export interface PositionDecay {
+  arm: PilotArm;
+  formulation: Formulation;
+  queries: number;
+  r: number[]; // Pearson r of score vs Opus grade over judged pairs in the band, pooled across queries
+  relevant: number[]; // share of those pairs graded 1 or 2
+  pairs: number[];
+}
+
 export interface Results {
   generatedAt: string;
   pilots: Pilots;
+  positionDecay: PositionDecay[]; // test split, every pilot formulation that has test runs
   snapshot: string; // data file the run used
   // true only for the UI development fixture; the report shows a banner when set
   synthetic: boolean;

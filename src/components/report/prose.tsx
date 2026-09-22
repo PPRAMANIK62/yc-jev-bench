@@ -1,4 +1,4 @@
-import { ARMS, INTENTS, type Results, type Verdict } from "@/lib/domain";
+import { ARMS, INTENTS, POSITION_BAND, type Formulation, type Results, type Verdict } from "@/lib/domain";
 import { int, metric, ms, pct, times, usd } from "@/lib/format";
 import { ArmName, armLabel, armOf, Swatch } from "./arms";
 
@@ -170,9 +170,9 @@ export function Pilots({ results }: { results: Results }) {
   return (
     <div className="mt-10">
       <p className="prose-paper text-ink">
-        Jev and Claude Haiku can each be asked two ways. Both got the same treatment: before the test set was touched, a
-        pilot on {int(pilots[0].pilot.queries)} held-out dev queries picked one formulation per model by nDCG@10, with
-        latency breaking near-ties. Every number below uses the pick.
+        Jev and Claude Haiku can each be asked two ways, and both got the same treatment: a pilot on{" "}
+        {int(pilots[0].pilot.queries)} held-out dev queries, never reported as results, picked one formulation per model
+        by nDCG@10, with latency breaking near-ties. Every number below uses the pick.
       </p>
       {pilots.map(({ arm, pilot }) => (
         <div key={arm} className="relative -mx-4 mt-6 overflow-x-auto px-4 sm:mx-0 sm:px-0">
@@ -273,11 +273,42 @@ export function Trust({ results }: { results: Results }) {
         <li>Retrieval is held fixed. A reranker cannot recover a company retrieval missed, so every arm shares that ceiling.</li>
         <li>
           Latency to a hosted API is mostly network. Claude Haiku ran through Claude Code, so its latency is API time
-          reported by Claude Code, close to but not the same as calling the API directly.
+          reported by Claude Code, close to but not the same as calling the API directly. When a search sends several
+          Haiku prompts at once, its latency is the slowest prompt&apos;s.
         </li>
+        <PositionDecayLimitation results={results} />
         <li>Costs use each provider&apos;s published list price on the run date.</li>
       </ul>
     </div>
+  );
+}
+
+const DECAY_LABEL: Record<Formulation, string> = {
+  batch_100: "Claude Haiku with all 100 cards in one prompt",
+  batch_10: "Claude Haiku with ten prompts of 10 cards",
+  fan_out: "Jev",
+  per_pair: "Jev asked once per card",
+};
+
+function PositionDecayLimitation({ results }: { results: Results }) {
+  const rows = results.positionDecay;
+  if (!rows.some((d) => d.arm === "haiku")) return null;
+  const bands = rows[0].r.map((_, i) => `${i * POSITION_BAND + 1}–${(i + 1) * POSITION_BAND}`);
+  const relevant = rows[0].relevant;
+  return (
+    <li>
+      Agreement with the judge depends on where a card sat in the retrieval list. Correlation of each score with the
+      judge&apos;s grade, for retrieval positions {bands.join(", ")}:{" "}
+      {rows.map((d, i) => (
+        <span key={`${d.arm}-${d.formulation}`}>
+          {i ? "; " : ""}
+          {DECAY_LABEL[d.formulation]} <span className="font-mono text-[0.85em]">{d.r.map(metric).join(", ")}</span>
+        </span>
+      ))}
+      . The share of relevant cards barely moves across those bands ({relevant.map(metric).join(", ")}), so a falling
+      correlation comes from the reranker, not the candidates. A 100-card prompt loses Haiku most of its agreement past
+      the first 25 cards; ten cards per prompt, the formulation its pilot picked, keeps most of it.
+    </li>
   );
 }
 
