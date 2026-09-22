@@ -60,6 +60,7 @@ export function Hero({ results }: { results: Results }) {
   const h = headline(results);
   const queries = INTENTS.reduce((s, i) => s + results.queryCounts[i], 0);
   const date = snapshotDate(results.snapshot);
+  const graded = Math.min(...["jev", "haiku"].map((a) => armOf(results, a as "jev" | "haiku")?.overall.n ?? Infinity));
   return (
     <header className="pt-14 pb-16 sm:pt-20 sm:pb-24">
       <p className="label text-muted-ink">Can Jev replace an LLM reranker?</p>
@@ -73,6 +74,11 @@ export function Hero({ results }: { results: Results }) {
       <h1 className="narrow mt-6 max-w-[24ch] text-[30px] leading-[1.1] font-semibold text-ink sm:text-[44px]">
         {h.before} <span className="font-mono text-[0.86em] tracking-[-0.02em]">{h.key}</span> {h.after}
       </h1>
+      {Number.isFinite(graded) && graded < queries ? (
+        <p className="mt-5 max-w-[60ch] font-serif text-[17px] leading-snug text-muted-ink">
+          Early number: it rests on {int(graded)} of {int(queries)} queries graded so far, and will move as grading finishes.
+        </p>
+      ) : null}
       <p className="label mt-8 flex flex-wrap gap-x-3 gap-y-1 text-muted-ink">
         <span>{int(queries)} test queries</span>
         <span className="text-rule">·</span>
@@ -150,7 +156,7 @@ export function JevPilot({ results }: { results: Results }) {
               <th scope="col" className="py-2 text-right font-normal">Requests per search</th>
             </tr>
           </thead>
-          <tbody className="font-mono text-[13px] tnum">
+          <tbody className="font-mono text-[13px] tnum whitespace-nowrap">
             {pilot.rows.map((r) => (
               <tr key={r.formulation} className="border-b border-rule">
                 <th scope="row" className="py-3 pr-4 font-sans text-[15px] font-normal text-ink">

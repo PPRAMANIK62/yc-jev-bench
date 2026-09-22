@@ -7,7 +7,7 @@ import { Caption } from "./section";
 
 const W = 720;
 const H = 380;
-const M = { l: 52, r: 24, t: 20, b: 44 };
+const M = { l: 52, r: 24, t: 34, b: 44 };
 
 function tickLabel(v: number): string {
   return v >= 1000 ? `${v / 1000} s` : `${v} ms`;
@@ -54,7 +54,7 @@ export function SpeedScatter({ results }: { results: Results }) {
           <text x={W - M.r} y={H - 4} textAnchor="end" className="fill-muted-ink font-mono text-[11px]">
             median latency per search, log scale →
           </text>
-          <text x={0} y={M.t - 8} className="fill-muted-ink font-mono text-[11px]">
+          <text x={0} y={12} className="fill-muted-ink font-mono text-[11px]">
             nDCG@10 ↑
           </text>
 
