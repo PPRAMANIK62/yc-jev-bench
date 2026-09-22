@@ -1,5 +1,6 @@
 import { appendFileSync, existsSync, mkdirSync, readFileSync } from "node:fs";
 import { dirname } from "node:path";
+import { mulberry32 } from "../src/lib/metrics";
 import type { BenchQuery, CandidateSet, QueryId } from "../src/lib/domain";
 
 export const QUERIES_FILE = "data/queries.jsonl";
@@ -17,17 +18,6 @@ export function readJsonl<T>(path: string): T[] {
 export function appendJsonl(path: string, row: unknown) {
   mkdirSync(dirname(path), { recursive: true });
   appendFileSync(path, JSON.stringify(row) + "\n");
-}
-
-export function mulberry32(seed: number) {
-  let a = seed >>> 0;
-  return () => {
-    a = (a + 0x6d2b79f5) >>> 0;
-    let t = a;
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
 }
 
 export function seededShuffle<T>(items: readonly T[], seed: number): T[] {
@@ -67,4 +57,17 @@ export function oneOf<T extends string>(name: string, value: string | undefined,
     process.exit(2);
   }
   return value as T;
+}
+
+// Round-robin across intents so `--limit N` samples every intent instead of the first one in the file.
+export function interleaveByIntent(queries: BenchQuery[]): BenchQuery[] {
+  const seen = new Map<string, number>();
+  return queries
+    .map((q) => {
+      const n = seen.get(q.intent) ?? 0;
+      seen.set(q.intent, n + 1);
+      return { q, n };
+    })
+    .sort((a, b) => a.n - b.n)
+    .map((x) => x.q);
 }
