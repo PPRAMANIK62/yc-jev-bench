@@ -69,7 +69,6 @@ const speed = (runs: { wallMs: number; apiMs: number | null; costUsd: number | n
   };
 };
 
-// ------------------------------------------------------------------ arms
 
 const commonArmQueries = intersect([...armRuns.values()].map((m) => m.keys()));
 
@@ -113,7 +112,6 @@ for (const arm of armRuns.keys()) {
   );
 }
 
-// ------------------------------------------------------------------ routers
 
 const commonRouteQueries = intersect([...routeRuns.values()].map((m) => m.keys()));
 const routers: RouterResult[] = [...routeRuns.keys()].map((router) => {
@@ -135,7 +133,6 @@ const calibration = jevRoutes.length
   ? calibrationBins(jevRoutes.map((r) => ({ confidence: r.confidence!, correct: r.predicted === byId.get(r.queryId)!.intent })))
   : null;
 
-// ------------------------------------------------------------------ judge agreement
 
 let judgeAgreement: Results["judgeAgreement"] = null;
 const human = readJsonl<GradeRecord>(HUMAN_GRADES);
@@ -152,7 +149,6 @@ if (human.length) {
   };
 }
 
-// ------------------------------------------------------------------ hypotheses
 
 const arm = (id: ArmId) => arms.find((a) => a.arm === id);
 const router = (id: RouterId) => routers.find((r) => r.router === id);
@@ -205,7 +201,6 @@ const hypotheses: HypothesisResult[] = [
   qualityHypothesis("H4", "Jev beats the open-source cross-encoder on accuracy.", "bge", (j, b) => j > b, false),
 ];
 
-// ------------------------------------------------------------------ explorer
 
 const explorerCompanies: Record<number, ExplorerCompany> = {};
 const explorerQueries: ExplorerQuery[] = test
@@ -231,7 +226,6 @@ for (const q of explorerQueries) {
   explorerCompanies[c.id] = { id: c.id, name: c.name, oneLiner: c.oneLiner, batchShort: c.batchShort };
 }
 
-// ------------------------------------------------------------------ write
 
 const results: Results = {
   generatedAt: new Date().toISOString(),

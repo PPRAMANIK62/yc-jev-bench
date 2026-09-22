@@ -19,7 +19,6 @@ export interface RerankOutput {
 
 const localCost = (wallMs: number): CallCost => ({ wallMs, apiMs: null, inputTokens: null, outputTokens: null, costUsd: null });
 
-// ------------------------------------------------------------------ bge cross-encoder
 
 const BGE_MODEL = "onnx-community/bge-reranker-v2-m3-ONNX";
 // Measured on 100 real cards (~183 tokens per pair): batch 8 took 15.4s, 25 took 19.9s, 100 took 23.6s.
@@ -46,7 +45,6 @@ async function bgeRerank({ query, companies }: RerankInput): Promise<RerankOutpu
   return { scores, confidences: null, cost: localCost(performance.now() - t0), model: `${BGE_MODEL} int8` };
 }
 
-// ------------------------------------------------------------------ haiku, one call per query
 
 // Every reranker sees only the query and the cards: Jev and BGE get no intent, so Haiku gets none either.
 export const HAIKU_RERANK_SYSTEM = `You are a search relevance grader for a directory of YC startups.
@@ -70,7 +68,6 @@ async function haikuRerank({ query, companies }: RerankInput): Promise<RerankOut
   return { scores: r.value, confidences: null, cost: r.cost, model: HAIKU };
 }
 
-// ------------------------------------------------------------------ registry
 
 export const RERANKERS: Record<ArmId, (input: RerankInput) => Promise<RerankOutput>> = {
   none: async ({ companies }) => ({ scores: companies.map((_, i) => companies.length - i), confidences: null, cost: localCost(0), model: "retrieval order" }),

@@ -61,7 +61,6 @@ const nameKey = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, "");
 const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const hnUrl = (id: string) => `https://news.ycombinator.com/item?id=${id}`;
 
-// ---------------------------------------------------------------- Launch HN → competitor
 
 const LAUNCH_TITLE = /Launch HN: (.+?) \(YC ([WSFX]\d{2})\)/;
 const INTRO_SENTENCE = /^(hi|hey|hello|howdy)\b|\b(we['’]re|we are|i['’]m|i am|my name|co-?founders?|founders? of|here from|this is)\b|https?:\/\/|\bHN\b/i;
@@ -121,7 +120,6 @@ function launchHn(hits: Hit[]): { rows: Candidate[]; unmatched: number; tooShort
   return { rows, unmatched, tooShort };
 }
 
-// ---------------------------------------------------------------- Ask HN → product, open_source
 
 const PRODUCT_TITLE = /\b(is there an? (tool|app|service|startup|product|saas|company|website|platform)|looking for an? (tool|service|app|saas|product|platform))\b/i;
 // "alternative to X" only when X looks like a named product (capitalized), which drops "alternatives to work/life balance"
@@ -152,7 +150,6 @@ function askHn(hits: Hit[]): Candidate[] {
   return rows;
 }
 
-// ---------------------------------------------------------------- Who wants to be hired → job
 
 interface Item {
   id: number;
@@ -204,7 +201,6 @@ async function wwtbh(): Promise<Candidate[]> {
   return rows;
 }
 
-// ---------------------------------------------------------------- main
 
 async function fetchCandidates(): Promise<Candidate[]> {
   const launches = await searchAll({ query: '"Launch HN"', tags: "story" });
