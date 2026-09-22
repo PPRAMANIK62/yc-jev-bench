@@ -209,13 +209,14 @@ function SkeletonRows() {
 }
 
 function UnderTheHood({ search, done }: { search: Search; done: boolean }) {
-  const { route, hits, rerankMs, costUsd, candidates, errors } = search;
+  const { route, hits, rerankMs, costUsd, candidates, errors, retrievalMode } = search;
   const parts: string[] = [];
   if (route) {
     parts.push(route.overridden ? `You picked: ${route.intent}` : `Jev: ${route.intent} (${route.confidence.toFixed(2)})`);
   } else if (errors.route) {
     parts.push("Not routed");
   }
+  if (retrievalMode === "keyword_only") parts.push("retrieval ran keyword-only (the embedding model didn’t load)");
   if (hits && rerankMs !== null) parts.push(`reranked ${candidates} companies in ${ms(rerankMs)}`);
   else if (done && search.retrieved) parts.push(`${candidates} candidates, retrieval order`);
   if (hits && costUsd !== null) parts.push(usd(costUsd));

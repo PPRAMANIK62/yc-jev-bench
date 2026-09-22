@@ -68,10 +68,10 @@ export async function POST(request: Request) {
 
       let candidates: Company[];
       try {
-        const { ids, ms } = await retrieve(query, { intent, k: CANDIDATES });
+        const { ids, ms, mode } = await retrieve(query, { intent, k: CANDIDATES });
         candidates = ids.map(companyById);
         const top = candidates.slice(0, TOP).map((company, i) => ({ company, retrievalRank: i + 1 }));
-        emit({ type: "retrieved", top, candidates: candidates.length, ms });
+        emit({ type: "retrieved", top, candidates: candidates.length, ms, mode });
       } catch (err) {
         console.error("retrieve failed", err);
         emit({ type: "error", stage: "retrieve", message: "Search failed on the server. Try again in a moment." });

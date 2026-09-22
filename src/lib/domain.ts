@@ -274,6 +274,10 @@ export interface RouteDecision {
   overridden: boolean;
 }
 
+// Retrieval fuses BM25 with dense cosine. When the embedding model cannot load the dense half is
+// dropped and BM25 ranks alone, which costs real recall, so the search page says when it happened.
+export type RetrievalMode = "hybrid" | "keyword_only";
+
 export interface SearchHit {
   company: Company;
   retrievalRank: number; // 1-based position in the 100 candidates, before Jev
@@ -283,7 +287,7 @@ export interface SearchHit {
 
 export type SearchEvent =
   | { type: "routed"; route: RouteDecision; ms: number }
-  | { type: "retrieved"; top: { company: Company; retrievalRank: number }[]; candidates: number; ms: number }
+  | { type: "retrieved"; top: { company: Company; retrievalRank: number }[]; candidates: number; ms: number; mode: RetrievalMode }
   | { type: "reranked"; hits: SearchHit[]; ms: number; costUsd: number | null }
   | { type: "done"; totalMs: number }
   | { type: "error"; stage: "route" | "retrieve" | "rerank"; message: string };

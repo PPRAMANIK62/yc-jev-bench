@@ -1,4 +1,4 @@
-import type { Company, Intent, RouteDecision, SearchEvent, SearchHit } from "@/lib/domain";
+import type { Company, Intent, RetrievalMode, RouteDecision, SearchEvent, SearchHit } from "@/lib/domain";
 
 export type Stage = Extract<SearchEvent, { type: "error" }>["stage"];
 
@@ -10,6 +10,7 @@ export interface Search {
   retrieved: { company: Company; retrievalRank: number }[] | null;
   candidates: number;
   retrieveMs: number | null;
+  retrievalMode: RetrievalMode | null;
   hits: SearchHit[] | null;
   rerankMs: number | null;
   costUsd: number | null;
@@ -38,6 +39,7 @@ export function reduce(state: SearchState, action: SearchAction): SearchState {
         retrieved: null,
         candidates: 0,
         retrieveMs: null,
+        retrievalMode: null,
         hits: null,
         rerankMs: null,
         costUsd: null,
@@ -56,7 +58,7 @@ export function reduce(state: SearchState, action: SearchAction): SearchState {
     case "routed":
       return { ...state, search: { ...s, route: e.route, routeMs: e.ms } };
     case "retrieved":
-      return { ...state, search: { ...s, retrieved: e.top, candidates: e.candidates, retrieveMs: e.ms } };
+      return { ...state, search: { ...s, retrieved: e.top, candidates: e.candidates, retrieveMs: e.ms, retrievalMode: e.mode } };
     case "reranked":
       return { ...state, search: { ...s, hits: e.hits, rerankMs: e.ms, costUsd: e.costUsd } };
     case "error":

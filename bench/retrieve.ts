@@ -11,6 +11,9 @@ const todo = loadQueries().filter((q) => !done.has(q.id));
 const ms: number[] = [];
 for (const q of todo) {
   const r = await retrieve(q.text, { intent: q.intent, k: 100 });
+  // The app degrades to BM25 when the embedding model is missing. Freezing that into the candidate
+  // set would silently cap every arm, so here it is a crash instead.
+  if (r.mode !== "hybrid") throw new Error(`retrieval fell back to ${r.mode}; fix the embedding model before freezing candidates`);
   ms.push(r.ms);
   appendJsonl(CANDIDATES_FILE, { queryId: q.id, candidateIds: r.ids } satisfies CandidateSet);
 }
