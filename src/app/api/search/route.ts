@@ -4,6 +4,10 @@ import { JEV_CHOSEN, jevRerank, jevRoute } from "@/lib/jev";
 import { retrieve } from "@/lib/retrieve";
 
 export const runtime = "nodejs";
+// A cold search measures 3.0 s on the production build here: 1.3 s routing, 0.35 s to open the ONNX
+// session and build the BM25 index over 6,245 cards, 1.3 s reranking. Warm it is 1.1 s. Thirty
+// seconds leaves room for a slower container and a slow Jev fan-out without hanging a searcher.
+export const maxDuration = 30;
 
 const MAX_QUERY = 300;
 const CANDIDATES = 100;
